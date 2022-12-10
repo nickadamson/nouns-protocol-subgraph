@@ -300,9 +300,9 @@ type TransactionCanceled @entity(immutable: true) {
 type TransactionExecuted @entity(immutable: true) {
   id: Bytes!
   proposalId: Bytes! # bytes32
-  targets: [Bytes]! # address[]
-  values: [BigInt]! # uint256[]
-  payloads: [Bytes]! # bytes[]
+  targets: [Bytes!]! # address[]
+  values: [BigInt!]! # uint256[]
+  payloads: [Bytes!]! # bytes[]
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -370,9 +370,9 @@ type ProposalCanceled @entity(immutable: true) {
 type ProposalCreated @entity(immutable: true) {
   id: Bytes!
   proposalId: Bytes! # bytes32
-  targets: [Bytes]! # address[]
-  values: [BigInt]! # uint256[]
-  calldatas: [Bytes]! # bytes[]
+  targets: [Bytes!]! # address[]
+  values: [BigInt!]! # uint256[]
+  calldatas: [Bytes!]! # bytes[]
   description: String! # string
   descriptionHash: Bytes! # bytes32
   proposal_proposer: Bytes! # address

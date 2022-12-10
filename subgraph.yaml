@@ -257,77 +257,77 @@ dataSources:
         - event: VotingPeriodUpdated(uint256,uint256)
           handler: handleVotingPeriodUpdated
       file: ./src/governor.ts
-  - kind: ethereum
-    name: Token
-    network: mainnet
-    source:
-      address: "0xb42d8E37DCBA5Fe5323C4a6722ba6DEd9E8E84Da"
-      abi: Token
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        # - TokenInitialized
-        # - TokenOwnerCanceled
-        # - TokenOwnerPending
-        # - TokenOwnerUpdated
-        # - ProposalCanceled
-        # - ProposalCreated
-        # - ProposalExecuted
-      abis:
-        - name: Token
-          file: ./abis/Token.json
-      eventHandlers:
-        # - event: TokenInitialized(uint256)
-        #   handler: handleTokenInitialized
-        # - event: TokenOwnerCanceled(indexed address,indexed address)
-        #   handler: handleTokenOwnerCanceled
-        # - event: TokenOwnerPending(indexed address,indexed address)
-        #   handler: handleTokenOwnerPending
-        # - event: TokenOwnerUpdated(indexed address,indexed address)
-        #   handler: handleTokenOwnerUpdated
-        # - event: ProposalCanceled(bytes32)
-        #   handler: handleProposalCanceled
-        # - event: ProposalCreated(bytes32,address[],uint256[],bytes[],string,bytes32,(address,uint32,uint32,uint32,uint32,uint32,uint32,uint32,uint32,bool,bool,bool))
-        #   handler: handleProposalCreated
-        # - event: ProposalExecuted(bytes32)
-        #   handler: handleProposalExecuted
-      file: ./src/token.ts
-  - kind: ethereum
-    name: MetadataRenderer
-    network: mainnet
-    source:
-      address: "0xb42d8E37DCBA5Fe5323C4a6722ba6DEd9E8E84Da"
-      abi: MetadataRenderer
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        # - MetadataRendererInitialized
-        # - MetadataRendererOwnerCanceled
-        # - MetadataRendererOwnerPending
-        # - MetadataRendererOwnerUpdated
-        # - ProposalCanceled
-        # - ProposalCreated
-        # - ProposalExecuted
-      abis:
-        - name: MetadataRenderer
-          file: ./abis/MetadataRenderer.json
-      eventHandlers:
-        # - event: MetadataRendererInitialized(uint256)
-        #   handler: handleMetadataRendererInitialized
-        # - event: MetadataRendererOwnerCanceled(indexed address,indexed address)
-        #   handler: handleMetadataRendererOwnerCanceled
-        # - event: MetadataRendererOwnerPending(indexed address,indexed address)
-        #   handler: handleMetadataRendererOwnerPending
-        # - event: MetadataRendererOwnerUpdated(indexed address,indexed address)
-        #   handler: handleMetadataRendererOwnerUpdated
-        # - event: ProposalCanceled(bytes32)
-        #   handler: handleProposalCanceled
-        # - event: ProposalCreated(bytes32,address[],uint256[],bytes[],string,bytes32,(address,uint32,uint32,uint32,uint32,uint32,uint32,uint32,uint32,bool,bool,bool))
-        #   handler: handleProposalCreated
-        # - event: ProposalExecuted(bytes32)
-        #   handler: handleProposalExecuted
-      file: ./src/metadata-renderer.ts
+  # - kind: ethereum
+  #   name: Token
+  #   network: mainnet
+  #   source:
+  #     address: "0xb42d8E37DCBA5Fe5323C4a6722ba6DEd9E8E84Da"
+  #     abi: Token
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.7
+  #     language: wasm/assemblyscript
+  #     entities:
+  # - TokenInitialized
+  # - TokenOwnerCanceled
+  # - TokenOwnerPending
+  # - TokenOwnerUpdated
+  # - ProposalCanceled
+  # - ProposalCreated
+  # - ProposalExecuted
+  # abis:
+  #   - name: Token
+  #     file: ./abis/Token.json
+  # eventHandlers:
+  # - event: TokenInitialized(uint256)
+  #   handler: handleTokenInitialized
+  # - event: TokenOwnerCanceled(indexed address,indexed address)
+  #   handler: handleTokenOwnerCanceled
+  # - event: TokenOwnerPending(indexed address,indexed address)
+  #   handler: handleTokenOwnerPending
+  # - event: TokenOwnerUpdated(indexed address,indexed address)
+  #   handler: handleTokenOwnerUpdated
+  # - event: ProposalCanceled(bytes32)
+  #   handler: handleProposalCanceled
+  # - event: ProposalCreated(bytes32,address[],uint256[],bytes[],string,bytes32,(address,uint32,uint32,uint32,uint32,uint32,uint32,uint32,uint32,bool,bool,bool))
+  #   handler: handleProposalCreated
+  # - event: ProposalExecuted(bytes32)
+  #   handler: handleProposalExecuted
+  #     file: ./src/token.ts
+  # - kind: ethereum
+  #   name: MetadataRenderer
+  #   network: mainnet
+  #   source:
+  #     address: "0xb42d8E37DCBA5Fe5323C4a6722ba6DEd9E8E84Da"
+  #     abi: MetadataRenderer
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.7
+  #     language: wasm/assemblyscript
+  #     entities:
+  # - MetadataRendererInitialized
+  # - MetadataRendererOwnerCanceled
+  # - MetadataRendererOwnerPending
+  # - MetadataRendererOwnerUpdated
+  # - ProposalCanceled
+  # - ProposalCreated
+  # - ProposalExecuted
+  # abis:
+  # - name: MetadataRenderer
+  # file: ./abis/MetadataRenderer.json
+  # eventHandlers:
+  # - event: MetadataRendererInitialized(uint256)
+  #   handler: handleMetadataRendererInitialized
+  # - event: MetadataRendererOwnerCanceled(indexed address,indexed address)
+  #   handler: handleMetadataRendererOwnerCanceled
+  # - event: MetadataRendererOwnerPending(indexed address,indexed address)
+  #   handler: handleMetadataRendererOwnerPending
+  # - event: MetadataRendererOwnerUpdated(indexed address,indexed address)
+  #   handler: handleMetadataRendererOwnerUpdated
+  # - event: ProposalCanceled(bytes32)
+  #   handler: handleProposalCanceled
+  # - event: ProposalCreated(bytes32,address[],uint256[],bytes[],string,bytes32,(address,uint32,uint32,uint32,uint32,uint32,uint32,uint32,uint32,bool,bool,bool))
+  #   handler: handleProposalCreated
+  # - event: ProposalExecuted(bytes32)
+  #   handler: handleProposalExecuted
+  # file: ./src/metadata-renderer.ts
