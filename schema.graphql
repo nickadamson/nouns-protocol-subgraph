@@ -1,0 +1,483 @@
+type DAODeployed @entity(immutable: true) {
+  id: Bytes!
+  token: Bytes! # address
+  metadata: Bytes! # address
+  auction: Bytes! # address
+  treasury: Bytes! # address
+  governor: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Initialized @entity(immutable: true) {
+  id: Bytes!
+  version: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OwnerCanceled @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  canceledOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OwnerPending @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  pendingOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OwnerUpdated @entity(immutable: true) {
+  id: Bytes!
+  prevOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type UpgradeRegistered @entity(immutable: true) {
+  id: Bytes!
+  baseImpl: Bytes! # address
+  upgradeImpl: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type UpgradeRemoved @entity(immutable: true) {
+  id: Bytes!
+  baseImpl: Bytes! # address
+  upgradeImpl: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Upgraded @entity(immutable: true) {
+  id: Bytes!
+  impl: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type ManagerUpgraded @entity(immutable: true) {
+  id: Bytes!
+  impl: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type Approval @entity(immutable: true) {
+  id: Bytes!
+  src: Bytes! # address
+  guy: Bytes! # address
+  wad: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Transfer @entity(immutable: true) {
+  id: Bytes!
+  src: Bytes! # address
+  dst: Bytes! # address
+  wad: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Deposit @entity(immutable: true) {
+  id: Bytes!
+  dst: Bytes! # address
+  wad: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Withdrawal @entity(immutable: true) {
+  id: Bytes!
+  src: Bytes! # address
+  wad: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type AuctionBid @entity(immutable: true) {
+  id: Bytes!
+  tokenId: BigInt! # uint256
+  bidder: Bytes! # address
+  amount: BigInt! # uint256
+  extended: Boolean! # bool
+  endTime: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AuctionCreated @entity(immutable: true) {
+  id: Bytes!
+  tokenId: BigInt! # uint256
+  startTime: BigInt! # uint256
+  endTime: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AuctionSettled @entity(immutable: true) {
+  id: Bytes!
+  tokenId: BigInt! # uint256
+  winner: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type DurationUpdated @entity(immutable: true) {
+  id: Bytes!
+  duration: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AuctionInitialized @entity(immutable: true) {
+  id: Bytes!
+  version: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type MinBidIncrementPercentageUpdated @entity(immutable: true) {
+  id: Bytes!
+  minBidIncrementPercentage: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AuctionOwnerCanceled @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  canceledOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AuctionOwnerPending @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  pendingOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AuctionOwnerUpdated @entity(immutable: true) {
+  id: Bytes!
+  prevOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Paused @entity(immutable: true) {
+  id: Bytes!
+  user: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ReservePriceUpdated @entity(immutable: true) {
+  id: Bytes!
+  reservePrice: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TimeBufferUpdated @entity(immutable: true) {
+  id: Bytes!
+  timeBuffer: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Unpaused @entity(immutable: true) {
+  id: Bytes!
+  user: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AuctionUpgraded @entity(immutable: true) {
+  id: Bytes!
+  impl: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type DelayUpdated @entity(immutable: true) {
+  id: Bytes!
+  prevDelay: BigInt! # uint256
+  newDelay: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type GracePeriodUpdated @entity(immutable: true) {
+  id: Bytes!
+  prevGracePeriod: BigInt! # uint256
+  newGracePeriod: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TreasuryInitialized @entity(immutable: true) {
+  id: Bytes!
+  version: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TreasuryOwnerCanceled @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  canceledOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TreasuryOwnerPending @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  pendingOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TreasuryOwnerUpdated @entity(immutable: true) {
+  id: Bytes!
+  prevOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TransactionCanceled @entity(immutable: true) {
+  id: Bytes!
+  proposalId: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TransactionExecuted @entity(immutable: true) {
+  id: Bytes!
+  proposalId: Bytes! # bytes32
+  targets: [Bytes]! # address[]
+  values: [BigInt]! # uint256[]
+  payloads: [Bytes]! # bytes[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TransactionScheduled @entity(immutable: true) {
+  id: Bytes!
+  proposalId: Bytes! # bytes32
+  timestamp: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TreasuryUpgraded @entity(immutable: true) {
+  id: Bytes!
+  impl: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type GovernorInitialized @entity(immutable: true) {
+  id: Bytes!
+  version: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type GovernorOwnerCanceled @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  canceledOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type GovernorOwnerPending @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  pendingOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type GovernorOwnerUpdated @entity(immutable: true) {
+  id: Bytes!
+  prevOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ProposalCanceled @entity(immutable: true) {
+  id: Bytes!
+  proposalId: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ProposalCreated @entity(immutable: true) {
+  id: Bytes!
+  proposalId: Bytes! # bytes32
+  targets: [Bytes]! # address[]
+  values: [BigInt]! # uint256[]
+  calldatas: [Bytes]! # bytes[]
+  description: String! # string
+  descriptionHash: Bytes! # bytes32
+  proposal_proposer: Bytes! # address
+  proposal_timeCreated: BigInt! # uint32
+  proposal_againstVotes: BigInt! # uint32
+  proposal_forVotes: BigInt! # uint32
+  proposal_abstainVotes: BigInt! # uint32
+  proposal_voteStart: BigInt! # uint32
+  proposal_voteEnd: BigInt! # uint32
+  proposal_proposalThreshold: BigInt! # uint32
+  proposal_quorumVotes: BigInt! # uint32
+  proposal_executed: Boolean! # bool
+  proposal_canceled: Boolean! # bool
+  proposal_vetoed: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ProposalExecuted @entity(immutable: true) {
+  id: Bytes!
+  proposalId: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ProposalQueued @entity(immutable: true) {
+  id: Bytes!
+  proposalId: Bytes! # bytes32
+  eta: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ProposalThresholdBpsUpdated @entity(immutable: true) {
+  id: Bytes!
+  prevBps: BigInt! # uint256
+  newBps: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ProposalVetoed @entity(immutable: true) {
+  id: Bytes!
+  proposalId: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type QuorumVotesBpsUpdated @entity(immutable: true) {
+  id: Bytes!
+  prevBps: BigInt! # uint256
+  newBps: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type GovernorUpgraded @entity(immutable: true) {
+  id: Bytes!
+  impl: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type VetoerUpdated @entity(immutable: true) {
+  id: Bytes!
+  prevVetoer: Bytes! # address
+  newVetoer: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type VoteCast @entity(immutable: true) {
+  id: Bytes!
+  voter: Bytes! # address
+  proposalId: Bytes! # bytes32
+  support: BigInt! # uint256
+  weight: BigInt! # uint256
+  reason: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type VotingDelayUpdated @entity(immutable: true) {
+  id: Bytes!
+  prevVotingDelay: BigInt! # uint256
+  newVotingDelay: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type VotingPeriodUpdated @entity(immutable: true) {
+  id: Bytes!
+  prevVotingPeriod: BigInt! # uint256
+  newVotingPeriod: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
