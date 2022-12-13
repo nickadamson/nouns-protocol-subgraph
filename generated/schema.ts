@@ -223,15 +223,6 @@ export class TokenContract extends Entity {
     this.set("contractURI", Value.fromString(value));
   }
 
-  get founders(): Array<string> {
-    let value = this.get("founders");
-    return value!.toStringArray();
-  }
-
-  set founders(value: Array<string>) {
-    this.set("founders", Value.fromStringArray(value));
-  }
-
   get DAO(): string {
     let value = this.get("DAO");
     return value!.toString();
@@ -239,6 +230,24 @@ export class TokenContract extends Entity {
 
   set DAO(value: string) {
     this.set("DAO", Value.fromString(value));
+  }
+
+  get auctionContract(): string {
+    let value = this.get("auctionContract");
+    return value!.toString();
+  }
+
+  set auctionContract(value: string) {
+    this.set("auctionContract", Value.fromString(value));
+  }
+
+  get founders(): Array<string> {
+    let value = this.get("founders");
+    return value!.toStringArray();
+  }
+
+  set founders(value: Array<string>) {
+    this.set("founders", Value.fromStringArray(value));
   }
 
   get tokens(): Array<string> {
@@ -413,6 +422,15 @@ export class AuctionContract extends Entity {
     this.set("DAO", Value.fromString(value));
   }
 
+  get tokenContract(): string {
+    let value = this.get("tokenContract");
+    return value!.toString();
+  }
+
+  set tokenContract(value: string) {
+    this.set("tokenContract", Value.fromString(value));
+  }
+
   get auctions(): Array<string> {
     let value = this.get("auctions");
     return value!.toStringArray();
@@ -498,6 +516,23 @@ export class Auction extends Entity {
     }
   }
 
+  get winningBid(): string | null {
+    let value = this.get("winningBid");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set winningBid(value: string | null) {
+    if (!value) {
+      this.unset("winningBid");
+    } else {
+      this.set("winningBid", Value.fromString(<string>value));
+    }
+  }
+
   get auctionContract(): string {
     let value = this.get("auctionContract");
     return value!.toString();
@@ -507,6 +542,23 @@ export class Auction extends Entity {
     this.set("auctionContract", Value.fromString(value));
   }
 
+  get token(): string | null {
+    let value = this.get("token");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set token(value: string | null) {
+    if (!value) {
+      this.unset("token");
+    } else {
+      this.set("token", Value.fromString(<string>value));
+    }
+  }
+
   get bids(): Array<string> {
     let value = this.get("bids");
     return value!.toStringArray();
@@ -514,15 +566,6 @@ export class Auction extends Entity {
 
   set bids(value: Array<string>) {
     this.set("bids", Value.fromStringArray(value));
-  }
-
-  get token(): string {
-    let value = this.get("token");
-    return value!.toString();
-  }
-
-  set token(value: string) {
-    this.set("token", Value.fromString(value));
   }
 }
 
@@ -591,15 +634,6 @@ export class AuctionBid extends Entity {
 
   set blockTimestamp(value: BigInt) {
     this.set("blockTimestamp", Value.fromBigInt(value));
-  }
-
-  get transactionHash(): Bytes {
-    let value = this.get("transactionHash");
-    return value!.toBytes();
-  }
-
-  set transactionHash(value: Bytes) {
-    this.set("transactionHash", Value.fromBytes(value));
   }
 
   get auction(): string {
@@ -766,6 +800,56 @@ export class Account extends Entity {
   }
 }
 
+export class Property extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Property entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Property must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Property", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Property | null {
+    return changetype<Property | null>(store.get("Property", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    return value!.toString();
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get metadataContract(): string {
+    let value = this.get("metadataContract");
+    return value!.toString();
+  }
+
+  set metadataContract(value: string) {
+    this.set("metadataContract", Value.fromString(value));
+  }
+}
+
 export class MetadataContract extends Entity {
   constructor(id: string) {
     super();
@@ -833,6 +917,15 @@ export class MetadataContract extends Entity {
 
   set rendererBase(value: string) {
     this.set("rendererBase", Value.fromString(value));
+  }
+
+  get properties(): Array<string> {
+    let value = this.get("properties");
+    return value!.toStringArray();
+  }
+
+  set properties(value: Array<string>) {
+    this.set("properties", Value.fromStringArray(value));
   }
 
   get DAO(): string {
@@ -1081,6 +1174,15 @@ export class GovernorContract extends Entity {
     this.set("votingPeriod", Value.fromBigInt(value));
   }
 
+  get proposals(): Array<string> {
+    let value = this.get("proposals");
+    return value!.toStringArray();
+  }
+
+  set proposals(value: Array<string>) {
+    this.set("proposals", Value.fromStringArray(value));
+  }
+
   get DAO(): string {
     let value = this.get("DAO");
     return value!.toString();
@@ -1149,13 +1251,13 @@ export class Proposal extends Entity {
     this.set("status", Value.fromString(value));
   }
 
-  get targets(): Array<Bytes> {
+  get targets(): Array<string> {
     let value = this.get("targets");
-    return value!.toBytesArray();
+    return value!.toStringArray();
   }
 
-  set targets(value: Array<Bytes>) {
-    this.set("targets", Value.fromBytesArray(value));
+  set targets(value: Array<string>) {
+    this.set("targets", Value.fromStringArray(value));
   }
 
   get values(): Array<BigInt> {
@@ -1203,13 +1305,13 @@ export class Proposal extends Entity {
     this.set("abstainVotes", Value.fromBigInt(value));
   }
 
-  get votes(): Array<string> {
-    let value = this.get("votes");
-    return value!.toStringArray();
+  get governorContract(): string {
+    let value = this.get("governorContract");
+    return value!.toString();
   }
 
-  set votes(value: Array<string>) {
-    this.set("votes", Value.fromStringArray(value));
+  set governorContract(value: string) {
+    this.set("governorContract", Value.fromString(value));
   }
 
   get submitter(): string {
@@ -1221,21 +1323,13 @@ export class Proposal extends Entity {
     this.set("submitter", Value.fromString(value));
   }
 
-  get transaction(): string | null {
-    let value = this.get("transaction");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
+  get votes(): Array<string> {
+    let value = this.get("votes");
+    return value!.toStringArray();
   }
 
-  set transaction(value: string | null) {
-    if (!value) {
-      this.unset("transaction");
-    } else {
-      this.set("transaction", Value.fromString(<string>value));
-    }
+  set votes(value: Array<string>) {
+    this.set("votes", Value.fromStringArray(value));
   }
 }
 
@@ -1279,21 +1373,22 @@ export class Vote extends Entity {
     this.set("supported", Value.fromString(value));
   }
 
-  get reason(): string | null {
+  get reason(): string {
     let value = this.get("reason");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
+    return value!.toString();
   }
 
-  set reason(value: string | null) {
-    if (!value) {
-      this.unset("reason");
-    } else {
-      this.set("reason", Value.fromString(<string>value));
-    }
+  set reason(value: string) {
+    this.set("reason", Value.fromString(value));
+  }
+
+  get weight(): BigInt {
+    let value = this.get("weight");
+    return value!.toBigInt();
+  }
+
+  set weight(value: BigInt) {
+    this.set("weight", Value.fromBigInt(value));
   }
 
   get proposal(): string {
@@ -1312,22 +1407,5 @@ export class Vote extends Entity {
 
   set voter(value: string) {
     this.set("voter", Value.fromString(value));
-  }
-
-  get delegate(): string | null {
-    let value = this.get("delegate");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set delegate(value: string | null) {
-    if (!value) {
-      this.unset("delegate");
-    } else {
-      this.set("delegate", Value.fromString(<string>value));
-    }
   }
 }

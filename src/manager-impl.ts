@@ -107,6 +107,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newTokenContract.symbol = tokenDeployment.symbol();
   newTokenContract.contractURI = tokenDeployment.contractURI();
   newTokenContract.totalSupply = tokenDeployment.totalSupply();
+  newTokenContract.auctionContract = auctionAddr;
   newTokenContract.save();
   const founders = tokenDeployment.getFounders();
   handleFounders(founders, newTokenContract);
@@ -118,6 +119,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newAuctionContract.timeBuffer = auctionDeployment.timeBuffer();
   newAuctionContract.minBidIncrement = auctionDeployment.minBidIncrement();
   newAuctionContract.paused = auctionDeployment.paused();
+  newAuctionContract.tokenContract = tokenAddr;
   newAuctionContract.save();
 
   let newMetadataContract = new MetadataContract(metadataAddr);

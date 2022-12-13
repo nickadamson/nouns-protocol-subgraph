@@ -72,18 +72,18 @@ templates:
       eventHandlers:
         - event: Initialized(uint256)
           handler: handleInitialized
-        - event: OwnerCanceled(indexed address,indexed address)
-          handler: handleOwnerCanceled
-        - event: OwnerPending(indexed address,indexed address)
-          handler: handleOwnerPending
-        - event: OwnerUpdated(indexed address,indexed address)
-          handler: handleOwnerUpdated
         - event: UpgradeRegistered(address,address)
           handler: handleUpgradeRegistered
         - event: UpgradeRemoved(address,address)
           handler: handleUpgradeRemoved
         - event: Upgraded(address)
           handler: handleUpgraded
+        - event: OwnerPending(indexed address,indexed address)
+          handler: handleOwnerPending
+        - event: OwnerCanceled(indexed address,indexed address)
+          handler: handleOwnerCanceled
+        - event: OwnerUpdated(indexed address,indexed address)
+          handler: handleOwnerUpdated
       file: ./src/manager-impl.ts
   - kind: ethereum
     name: Auction
@@ -101,32 +101,32 @@ templates:
         - name: Auction
           file: ./abis/Auction.json
       eventHandlers:
-        - event: AuctionBid(uint256,address,uint256,bool,uint256)
-          handler: handleAuctionBid
+        - event: AuctionInitialized(uint256)
+          handler: handleAuctionInitialized
         - event: AuctionCreated(uint256,uint256,uint256)
           handler: handleAuctionCreated
+        - event: AuctionBid(uint256,address,uint256,bool,uint256)
+          handler: handleAuctionBid
         - event: AuctionSettled(uint256,address,uint256)
           handler: handleAuctionSettled
         - event: DurationUpdated(uint256)
           handler: handleDurationUpdated
-        - event: AuctionInitialized(uint256)
-          handler: handleAuctionInitialized
         - event: MinBidIncrementPercentageUpdated(uint256)
           handler: handleMinBidIncrementPercentageUpdated
+        - event: ReservePriceUpdated(uint256)
+          handler: handleReservePriceUpdated
+        - event: TimeBufferUpdated(uint256)
+          handler: handleTimeBufferUpdated
+        - event: Paused(address)
+          handler: handlePaused
+        - event: Unpaused(address)
+          handler: handleUnpaused
         - event: AuctionOwnerCanceled(indexed address,indexed address)
           handler: handleAuctionOwnerCanceled
         - event: AuctionOwnerPending(indexed address,indexed address)
           handler: handleAuctionOwnerPending
         - event: AuctionOwnerUpdated(indexed address,indexed address)
           handler: handleAuctionOwnerUpdated
-        - event: Paused(address)
-          handler: handlePaused
-        - event: ReservePriceUpdated(uint256)
-          handler: handleReservePriceUpdated
-        - event: TimeBufferUpdated(uint256)
-          handler: handleTimeBufferUpdated
-        - event: Unpaused(address)
-          handler: handleUnpaused
         - event: AuctionUpgraded(address)
           handler: handleAuctionUpgraded
       file: ./src/auction.ts
@@ -146,24 +146,24 @@ templates:
         - name: Treasury
           file: ./abis/Treasury.json
       eventHandlers:
+        - event: TreasuryInitialized(uint256)
+          handler: handleTreasuryInitialized
         - event: DelayUpdated(uint256,uint256)
           handler: handleDelayUpdated
         - event: GracePeriodUpdated(uint256,uint256)
           handler: handleGracePeriodUpdated
-        - event: TreasuryInitialized(uint256)
-          handler: handleTreasuryInitialized
+        - event: TransactionScheduled(bytes32,uint256)
+          handler: handleTransactionScheduled
+        - event: TransactionCanceled(bytes32)
+          handler: handleTransactionCanceled
+        - event: TransactionExecuted(bytes32,address[],uint256[],bytes[])
+          handler: handleTransactionExecuted
         - event: TreasuryOwnerCanceled(indexed address,indexed address)
           handler: handleTreasuryOwnerCanceled
         - event: TreasuryOwnerPending(indexed address,indexed address)
           handler: handleTreasuryOwnerPending
         - event: TreasuryOwnerUpdated(indexed address,indexed address)
           handler: handleTreasuryOwnerUpdated
-        - event: TransactionCanceled(bytes32)
-          handler: handleTransactionCanceled
-        - event: TransactionExecuted(bytes32,address[],uint256[],bytes[])
-          handler: handleTransactionExecuted
-        - event: TransactionScheduled(bytes32,uint256)
-          handler: handleTransactionScheduled
         - event: TreasuryUpgraded(address)
           handler: handleTreasuryUpgraded
       file: ./src/treasury.ts
@@ -186,28 +186,20 @@ templates:
       eventHandlers:
         - event: GovernorInitialized(uint256)
           handler: handleGovernorInitialized
-        - event: GovernorOwnerCanceled(indexed address,indexed address)
-          handler: handleGovernorOwnerCanceled
-        - event: GovernorOwnerPending(indexed address,indexed address)
-          handler: handleGovernorOwnerPending
-        - event: GovernorOwnerUpdated(indexed address,indexed address)
-          handler: handleGovernorOwnerUpdated
-        - event: ProposalCanceled(bytes32)
-          handler: handleProposalCanceled
         - event: ProposalCreated(bytes32,address[],uint256[],bytes[],string,bytes32,(address,uint32,uint32,uint32,uint32,uint32,uint32,uint32,uint32,bool,bool,bool))
           handler: handleProposalCreated
-        - event: ProposalExecuted(bytes32)
-          handler: handleProposalExecuted
+        - event: ProposalCanceled(bytes32)
+          handler: handleProposalCanceled
         - event: ProposalQueued(bytes32,uint256)
           handler: handleProposalQueued
-        - event: ProposalThresholdBpsUpdated(uint256,uint256)
-          handler: handleProposalThresholdBpsUpdated
         - event: ProposalVetoed(bytes32)
           handler: handleProposalVetoed
+        - event: ProposalExecuted(bytes32)
+          handler: handleProposalExecuted
+        - event: ProposalThresholdBpsUpdated(uint256,uint256)
+          handler: handleProposalThresholdBpsUpdated
         - event: QuorumVotesBpsUpdated(uint256,uint256)
           handler: handleQuorumVotesBpsUpdated
-        - event: GovernorUpgraded(address)
-          handler: handleGovernorUpgraded
         - event: VetoerUpdated(address,address)
           handler: handleVetoerUpdated
         - event: VoteCast(address,bytes32,uint256,uint256,string)
@@ -216,6 +208,14 @@ templates:
           handler: handleVotingDelayUpdated
         - event: VotingPeriodUpdated(uint256,uint256)
           handler: handleVotingPeriodUpdated
+        - event: GovernorOwnerCanceled(indexed address,indexed address)
+          handler: handleGovernorOwnerCanceled
+        - event: GovernorOwnerPending(indexed address,indexed address)
+          handler: handleGovernorOwnerPending
+        - event: GovernorOwnerUpdated(indexed address,indexed address)
+          handler: handleGovernorOwnerUpdated
+        - event: GovernorUpgraded(address)
+          handler: handleGovernorUpgraded
       file: ./src/governor.ts
   - kind: ethereum
     name: Token
@@ -232,8 +232,10 @@ templates:
         - name: Token
           file: ./abis/Token.json
       eventHandlers:
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
+        - event: TokenInitialized(uint256)
+          handler: handleTokenInitialized
+        - event: TokenTransfer(indexed address,indexed address,indexed uint256)
+          handler: handleTokenTransfer
         - event: DelegateChanged(indexed address,indexed address,indexed address)
           handler: handleDelegateChanged
         - event: DelegateVotesChanged(indexed address,uint256,uint256)
@@ -244,18 +246,12 @@ templates:
           handler: handleMintScheduled
         - event: MintUnscheduled(uint256,uint256,(address,uint8,uint32))
           handler: handleMintUnscheduled
-        - event: TokenApproval(indexed address,indexed address,indexed uint256)
-          handler: handleTokenApproval
-        - event: TokenInitialized(uint256)
-          handler: handleTokenInitialized
         - event: TokenOwnerCanceled(indexed address,indexed address)
           handler: handleTokenOwnerCanceled
         - event: TokenOwnerPending(indexed address,indexed address)
           handler: handleTokenOwnerPending
         - event: TokenOwnerUpdated(indexed address,indexed address)
           handler: handleTokenOwnerUpdated
-        - event: TokenTransfer(indexed address,indexed address,indexed uint256)
-          handler: handleTokenTransfer
         - event: TokenUpgraded(address)
           handler: handleTokenUpgraded
       file: ./src/token.ts
@@ -274,20 +270,20 @@ templates:
         - name: MetadataRenderer
           file: ./abis/MetadataRenderer.json
       eventHandlers:
-        - event: AdditionalTokenPropertiesSet((string,string,bool)[])
-          handler: handleAdditionalTokenPropertiesSet
+        - event: MetadataRendererInitialized(uint256)
+          handler: handleMetadataRendererInitialized
+        - event: WebsiteURIUpdated(string,string)
+          handler: handleWebsiteURIUpdated
         - event: ContractImageUpdated(string,string)
           handler: handleContractImageUpdated
         - event: DescriptionUpdated(string,string)
           handler: handleDescriptionUpdated
-        - event: MetadataRendererInitialized(uint256)
-          handler: handleMetadataRendererInitialized
-        - event: MetadataRendererUpgraded(address)
-          handler: handleMetadataRendererUpgraded
         - event: PropertyAdded(uint256,string)
           handler: handlePropertyAdded
+        - event: AdditionalTokenPropertiesSet((string,string,bool)[])
+          handler: handleAdditionalTokenPropertiesSet
         - event: RendererBaseUpdated(string,string)
           handler: handleRendererBaseUpdated
-        - event: WebsiteURIUpdated(string,string)
-          handler: handleWebsiteURIUpdated
+        - event: MetadataRendererUpgraded(address)
+          handler: handleMetadataRendererUpgraded
       file: ./src/metadata-renderer.ts

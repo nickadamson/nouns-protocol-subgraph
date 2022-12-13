@@ -37,8 +37,9 @@ type TokenContract @entity {
   totalSupply: BigInt!
   contractURI: String!
 
-  founders: [FounderInfo!]! @derivedFrom(field: "tokenContract")
   DAO: DAO!
+  auctionContract: AuctionContract!
+  founders: [FounderInfo!]! @derivedFrom(field: "tokenContract")
   tokens: [Token!]! @derivedFrom(field: "tokenContract")
 }
 
@@ -61,6 +62,7 @@ type AuctionContract @entity {
   paused: Boolean!
 
   DAO: DAO!
+  tokenContract: TokenContract!
   auctions: [Auction!]! @derivedFrom(field: "auctionContract") # daily (or other interval) auctions
 }
 
@@ -70,9 +72,11 @@ type Auction @entity {
   startTime: BigInt! # uint256
   endTime: BigInt! # uint256
   winner: Account # address
+  winningBid: AuctionBid
+
   auctionContract: AuctionContract!
+  token: Token @derivedFrom(field: "auction")
   bids: [AuctionBid!]! @derivedFrom(field: "auction")
-  token: Token!
 }
 
 type AuctionBid @entity(immutable: true) {
@@ -81,7 +85,6 @@ type AuctionBid @entity(immutable: true) {
   extended: Boolean! # bool
   blockNumber: BigInt!
   blockTimestamp: BigInt!
-  transactionHash: Bytes!
 
   auction: Auction!
   bidder: Account!
@@ -105,12 +108,19 @@ type Account @entity {
   delegatedBy: [Delegation!]! @derivedFrom(field: "delegatedTo")
 }
 
+type Property @entity {
+  id: ID! # metadataAddr + propertyId
+  name: String!
+  metadataContract: MetadataContract!
+}
+
 type MetadataContract @entity {
   id: ID! # address
   websiteURL: String! # projectURI
   description: String!
   contractImage: String!
   rendererBase: String!
+  properties: [Property!]! @derivedFrom(field: "metadataContract")
 
   DAO: DAO!
 }
@@ -143,6 +153,7 @@ type GovernorContract @entity {
   votingDelay: BigInt!
   votingPeriod: BigInt!
 
+  proposals: [Proposal!]! @derivedFrom(field: "governorContract")
   DAO: DAO!
 }
 
@@ -160,17 +171,17 @@ type Proposal @entity {
   description: String!
   descriptionHash: Bytes!
   status: ProposalStatus!
-  targets: [Bytes!]!
+  targets: [String!]!
   values: [BigInt!]!
   calldatas: [Bytes!]!
 
   forVotes: BigInt!
   againstVotes: BigInt!
   abstainVotes: BigInt!
-  votes: [Vote!]! @derivedFrom(field: "proposal")
 
+  governorContract: GovernorContract!
   submitter: Account!
-  transaction: TreasuryTransaction
+  votes: [Vote!]! @derivedFrom(field: "proposal")
 }
 
 enum VoteType {
@@ -180,11 +191,12 @@ enum VoteType {
 }
 
 type Vote @entity {
-  id: ID!
+  id: ID! # txHash
   supported: VoteType!
-  reason: String
+  reason: String!
+  weight: BigInt!
 
   proposal: Proposal!
   voter: Account!
-  delegate: Account
+  # delegate: Account
 }
