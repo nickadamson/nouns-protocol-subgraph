@@ -1,0 +1,8 @@
+{
+  "generates": {
+    "./types/nouns-builder-graph-types.ts": {
+      "schema": "./types/nouns-builder-graph-schema.graphql",
+      "plugins": ["typescript", "typescript-operations"]
+    }
+  }
+}
