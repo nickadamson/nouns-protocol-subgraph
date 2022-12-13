@@ -1,483 +1,190 @@
-type DAODeployed @entity(immutable: true) {
-  id: Bytes!
-  token: Bytes! # address
-  metadata: Bytes! # address
-  auction: Bytes! # address
-  treasury: Bytes! # address
-  governor: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type FounderInfo @entity {
+  id: ID!
+  ownershipPercentage: BigInt!
+  vestExpiry: BigInt!
+
+  tokenContract: TokenContract!
+  account: Account!
 }
 
-type Initialized @entity(immutable: true) {
-  id: Bytes!
-  version: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type DAO @entity {
+  id: ID! # `DAO-${tokenContractAddress}`
+  # token Info
+  tokenContract: TokenContract! @derivedFrom(field: "DAO")
+  # tokenAddress: Bytes!
+
+  # auction Info
+  auctionContract: AuctionContract! @derivedFrom(field: "DAO")
+  # auctionAddress: Bytes!
+
+  # metadata Info
+  metadataContract: MetadataContract! @derivedFrom(field: "DAO")
+  # metadataAddress: Bytes!
+
+  # governor Info
+  governorContract: GovernorContract! @derivedFrom(field: "DAO")
+  # governorAddress: Bytes!
+
+  # treasury Info
+  treasuryContract: TreasuryContract! @derivedFrom(field: "DAO")
+  # treasuryAddress: Bytes!
 }
 
-type OwnerCanceled @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  canceledOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type TokenContract @entity {
+  id: ID! # address
+  name: String!
+  symbol: String!
+  totalSupply: BigInt!
+  contractURI: String!
+
+  founders: [FounderInfo!]! @derivedFrom(field: "tokenContract")
+  DAO: DAO!
+  tokens: [Token!]! @derivedFrom(field: "tokenContract")
 }
 
-type OwnerPending @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  pendingOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Token @entity {
+  id: ID! # tokenAddress + tokenId
+  tokenId: BigInt!
+  tokenURI: String!
+
+  tokenContract: TokenContract!
+  auction: Auction!
+  owner: Account!
 }
 
-type OwnerUpdated @entity(immutable: true) {
-  id: Bytes!
-  prevOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type AuctionContract @entity {
+  id: ID! # address
+  duration: BigInt!
+  reservePrice: BigInt!
+  timeBuffer: BigInt!
+  minBidIncrement: BigInt!
+  paused: Boolean!
+
+  DAO: DAO!
+  auctions: [Auction!]! @derivedFrom(field: "auctionContract") # daily (or other interval) auctions
 }
 
-type UpgradeRegistered @entity(immutable: true) {
-  id: Bytes!
-  baseImpl: Bytes! # address
-  upgradeImpl: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type UpgradeRemoved @entity(immutable: true) {
-  id: Bytes!
-  baseImpl: Bytes! # address
-  upgradeImpl: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Upgraded @entity(immutable: true) {
-  id: Bytes!
-  impl: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type ManagerUpgraded @entity(immutable: true) {
-  id: Bytes!
-  impl: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type Approval @entity(immutable: true) {
-  id: Bytes!
-  src: Bytes! # address
-  guy: Bytes! # address
-  wad: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Transfer @entity(immutable: true) {
-  id: Bytes!
-  src: Bytes! # address
-  dst: Bytes! # address
-  wad: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Deposit @entity(immutable: true) {
-  id: Bytes!
-  dst: Bytes! # address
-  wad: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Withdrawal @entity(immutable: true) {
-  id: Bytes!
-  src: Bytes! # address
-  wad: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type AuctionBid @entity(immutable: true) {
-  id: Bytes!
-  tokenId: BigInt! # uint256
-  bidder: Bytes! # address
-  amount: BigInt! # uint256
-  extended: Boolean! # bool
-  endTime: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type AuctionCreated @entity(immutable: true) {
-  id: Bytes!
-  tokenId: BigInt! # uint256
+type Auction @entity {
+  id: ID! # address + tokenId
+  settled: Boolean!
   startTime: BigInt! # uint256
   endTime: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  winner: Account # address
+  auctionContract: AuctionContract!
+  bids: [AuctionBid!]! @derivedFrom(field: "auction")
+  token: Token!
 }
 
-type AuctionSettled @entity(immutable: true) {
-  id: Bytes!
-  tokenId: BigInt! # uint256
-  winner: Bytes! # address
+type AuctionBid @entity(immutable: true) {
+  id: ID! # txHash
   amount: BigInt! # uint256
+  extended: Boolean! # bool
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
+
+  auction: Auction!
+  bidder: Account!
 }
 
-type DurationUpdated @entity(immutable: true) {
-  id: Bytes!
-  duration: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Delegation @entity {
+  id: ID! # account address + dao address
+  DAO: DAO!
+  voter: Account!
+  delegatedTo: Account!
 }
 
-type AuctionInitialized @entity(immutable: true) {
-  id: Bytes!
-  version: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Account @entity {
+  id: ID! # address
+  bids: [AuctionBid!]! @derivedFrom(field: "bidder")
+  tokens: [Token!]! @derivedFrom(field: "owner")
+  votes: [Vote!]! @derivedFrom(field: "voter")
+  submittedProposals: [Proposal!]! @derivedFrom(field: "submitter")
+
+  delegations: [Delegation!]! @derivedFrom(field: "voter")
+  delegatedBy: [Delegation!]! @derivedFrom(field: "delegatedTo")
 }
 
-type MinBidIncrementPercentageUpdated @entity(immutable: true) {
-  id: Bytes!
-  minBidIncrementPercentage: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type MetadataContract @entity {
+  id: ID! # address
+  websiteURL: String! # projectURI
+  description: String!
+  contractImage: String!
+  rendererBase: String!
+
+  DAO: DAO!
 }
 
-type AuctionOwnerCanceled @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  canceledOwner: Bytes! # address
+type TreasuryTransaction @entity {
+  id: ID!
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
+
+  treasuryContract: TreasuryContract!
+  proposal: Proposal!
 }
 
-type AuctionOwnerPending @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  pendingOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type TreasuryContract @entity {
+  id: ID! # address
+  delay: BigInt!
+  gracePeriod: BigInt!
+
+  DAO: DAO!
+  transactions: [TreasuryTransaction!]! @derivedFrom(field: "treasuryContract")
 }
 
-type AuctionOwnerUpdated @entity(immutable: true) {
-  id: Bytes!
-  prevOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type GovernorContract @entity {
+  id: ID! # address
+  vetoEnabled: Boolean!
+  vetoerAddress: Bytes!
+  proposalThreshold: BigInt! # bps
+  quoromThreshold: BigInt! # bps
+  votingDelay: BigInt!
+  votingPeriod: BigInt!
+
+  DAO: DAO!
 }
 
-type Paused @entity(immutable: true) {
-  id: Bytes!
-  user: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+enum ProposalStatus {
+  PENDING
+  ACTIVE
+  CANCELLED
+  VETOED
+  QUEUED
+  EXECUTED
 }
 
-type ReservePriceUpdated @entity(immutable: true) {
-  id: Bytes!
-  reservePrice: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Proposal @entity {
+  id: ID!
+  description: String!
+  descriptionHash: Bytes!
+  status: ProposalStatus!
+  targets: [Bytes!]!
+  values: [BigInt!]!
+  calldatas: [Bytes!]!
+
+  forVotes: BigInt!
+  againstVotes: BigInt!
+  abstainVotes: BigInt!
+  votes: [Vote!]! @derivedFrom(field: "proposal")
+
+  submitter: Account!
+  transaction: TreasuryTransaction
 }
 
-type TimeBufferUpdated @entity(immutable: true) {
-  id: Bytes!
-  timeBuffer: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+enum VoteType {
+  FOR
+  AGAINST
+  ABSTAIN
 }
 
-type Unpaused @entity(immutable: true) {
-  id: Bytes!
-  user: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
+type Vote @entity {
+  id: ID!
+  supported: VoteType!
+  reason: String
 
-type AuctionUpgraded @entity(immutable: true) {
-  id: Bytes!
-  impl: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type DelayUpdated @entity(immutable: true) {
-  id: Bytes!
-  prevDelay: BigInt! # uint256
-  newDelay: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type GracePeriodUpdated @entity(immutable: true) {
-  id: Bytes!
-  prevGracePeriod: BigInt! # uint256
-  newGracePeriod: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TreasuryInitialized @entity(immutable: true) {
-  id: Bytes!
-  version: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TreasuryOwnerCanceled @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  canceledOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TreasuryOwnerPending @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  pendingOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TreasuryOwnerUpdated @entity(immutable: true) {
-  id: Bytes!
-  prevOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TransactionCanceled @entity(immutable: true) {
-  id: Bytes!
-  proposalId: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TransactionExecuted @entity(immutable: true) {
-  id: Bytes!
-  proposalId: Bytes! # bytes32
-  targets: [Bytes!]! # address[]
-  values: [BigInt!]! # uint256[]
-  payloads: [Bytes!]! # bytes[]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TransactionScheduled @entity(immutable: true) {
-  id: Bytes!
-  proposalId: Bytes! # bytes32
-  timestamp: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TreasuryUpgraded @entity(immutable: true) {
-  id: Bytes!
-  impl: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type GovernorInitialized @entity(immutable: true) {
-  id: Bytes!
-  version: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type GovernorOwnerCanceled @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  canceledOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type GovernorOwnerPending @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  pendingOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type GovernorOwnerUpdated @entity(immutable: true) {
-  id: Bytes!
-  prevOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ProposalCanceled @entity(immutable: true) {
-  id: Bytes!
-  proposalId: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ProposalCreated @entity(immutable: true) {
-  id: Bytes!
-  proposalId: Bytes! # bytes32
-  targets: [Bytes!]! # address[]
-  values: [BigInt!]! # uint256[]
-  calldatas: [Bytes!]! # bytes[]
-  description: String! # string
-  descriptionHash: Bytes! # bytes32
-  proposal_proposer: Bytes! # address
-  proposal_timeCreated: BigInt! # uint32
-  proposal_againstVotes: BigInt! # uint32
-  proposal_forVotes: BigInt! # uint32
-  proposal_abstainVotes: BigInt! # uint32
-  proposal_voteStart: BigInt! # uint32
-  proposal_voteEnd: BigInt! # uint32
-  proposal_proposalThreshold: BigInt! # uint32
-  proposal_quorumVotes: BigInt! # uint32
-  proposal_executed: Boolean! # bool
-  proposal_canceled: Boolean! # bool
-  proposal_vetoed: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ProposalExecuted @entity(immutable: true) {
-  id: Bytes!
-  proposalId: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ProposalQueued @entity(immutable: true) {
-  id: Bytes!
-  proposalId: Bytes! # bytes32
-  eta: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ProposalThresholdBpsUpdated @entity(immutable: true) {
-  id: Bytes!
-  prevBps: BigInt! # uint256
-  newBps: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ProposalVetoed @entity(immutable: true) {
-  id: Bytes!
-  proposalId: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type QuorumVotesBpsUpdated @entity(immutable: true) {
-  id: Bytes!
-  prevBps: BigInt! # uint256
-  newBps: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type GovernorUpgraded @entity(immutable: true) {
-  id: Bytes!
-  impl: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type VetoerUpdated @entity(immutable: true) {
-  id: Bytes!
-  prevVetoer: Bytes! # address
-  newVetoer: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type VoteCast @entity(immutable: true) {
-  id: Bytes!
-  voter: Bytes! # address
-  proposalId: Bytes! # bytes32
-  support: BigInt! # uint256
-  weight: BigInt! # uint256
-  reason: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type VotingDelayUpdated @entity(immutable: true) {
-  id: Bytes!
-  prevVotingDelay: BigInt! # uint256
-  newVotingDelay: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type VotingPeriodUpdated @entity(immutable: true) {
-  id: Bytes!
-  prevVotingPeriod: BigInt! # uint256
-  newVotingPeriod: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  proposal: Proposal!
+  voter: Account!
+  delegate: Account
 }
