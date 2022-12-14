@@ -74,7 +74,6 @@ type MetadataContract @entity {
   description: String!
   contractImage: String!
   rendererBase: String!
-  owner: String!
 
   properties: [Property!]! @derivedFrom(field: "metadataContract")
   DAO: DAO!

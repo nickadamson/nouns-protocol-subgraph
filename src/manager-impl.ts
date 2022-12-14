@@ -134,7 +134,6 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newMetadataContract.description = metadataDeployment.description();
   newMetadataContract.contractImage = metadataDeployment.contractImage();
   newMetadataContract.rendererBase = metadataDeployment.rendererBase();
-  newMetadataContract.owner = metadataDeployment.owner().toHexString();
   newMetadataContract.save();
 
   GovernorContractEntity.create(Address.fromString(governorAddr));
