@@ -81,6 +81,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
 
   // init DAO entity & save
   let newDAO = new DAO(tokenAddr);
+  newDAO.creationTxHash = event.transaction.hash;
   newDAO.save();
 
   // init instances of DAO contracts so that we can call them (initialization doesn't emit events)

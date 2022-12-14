@@ -21,6 +21,10 @@ export function handleProposalCreated(event: ProposalCreated): void {
   const governorAddr = event.address.toHexString();
   const submitterAddr = event.transaction.from.toHexString();
   const submitter = findOrCreateAccount(submitterAddr);
+
+  const _description = event.params.description;
+  const array = _description.split("&&");
+
   const _targets = event.params.targets;
   const targets: string[] = [];
   for (let i = 0; i < _targets.length; i++) {
@@ -32,10 +36,13 @@ export function handleProposalCreated(event: ProposalCreated): void {
   newProposal.targets = targets;
   newProposal.values = event.params.values;
   newProposal.calldatas = event.params.calldatas;
-  newProposal.description = event.params.description;
+  newProposal.title = array[0];
+  newProposal.description = array[1];
   newProposal.descriptionHash = event.params.descriptionHash;
   newProposal.governorContract = governorAddr;
   newProposal.submitter = submitter.id;
+  newProposal.blockTimestamp = event.block.timestamp;
+  newProposal.creationTxHash = event.transaction.hash;
 
   newProposal.forVotes = BigInt.fromI32(0);
   newProposal.againstVotes = BigInt.fromI32(0);
@@ -128,6 +135,7 @@ export function handleVoteCast(event: VoteCast): void {
   newVote.weight = event.params.weight;
   newVote.proposal = proposal.id;
   newVote.voter = voter.id;
+  newVote.blockTimestamp = event.block.timestamp;
   newVote.save();
 }
 

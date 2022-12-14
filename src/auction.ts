@@ -47,7 +47,6 @@ export function handleAuctionBid(event: AuctionBidEvent): void {
   newBid.bidder = bidder.id;
   newBid.amount = amount;
   newBid.extended = event.params.extended;
-  newBid.blockNumber = event.block.number;
   newBid.blockTimestamp = event.block.timestamp;
   newBid.save();
 }

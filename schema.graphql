@@ -13,8 +13,16 @@ enum VoteType {
   ABSTAIN
 }
 
+enum TreasuryTxStatus {
+  SCHEDULED
+  CANCELLED
+  EXECUTED
+}
+
 type DAO @entity {
   id: ID! # tokenContractAddress
+  creationTxHash: Bytes!
+
   # token Info
   tokenContract: TokenContract! @derivedFrom(field: "DAO")
   # tokenAddress: Bytes!
@@ -131,7 +139,6 @@ type AuctionBid @entity(immutable: true) {
   id: ID! # txHash
   amount: BigInt! # uint256
   extended: Boolean! # bool
-  blockNumber: BigInt!
   blockTimestamp: BigInt!
 
   auction: Auction!
@@ -152,13 +159,16 @@ type Property @entity {
 }
 
 type Proposal @entity {
-  id: ID!
+  id: ID! # proposalId
+  title: String!
   description: String!
   descriptionHash: Bytes!
   status: ProposalStatus!
   targets: [String!]!
   values: [BigInt!]!
   calldatas: [Bytes!]!
+  blockTimestamp: BigInt!
+  creationTxHash: Bytes!
 
   forVotes: BigInt!
   againstVotes: BigInt!
@@ -174,6 +184,7 @@ type Vote @entity {
   supported: VoteType!
   reason: String!
   weight: BigInt!
+  blockTimestamp: BigInt!
 
   proposal: Proposal!
   voter: Account!
@@ -181,10 +192,13 @@ type Vote @entity {
 }
 
 type TreasuryTransaction @entity {
-  id: ID!
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  id: ID! # txHash
+  status: TreasuryTxStatus!
+  etaTimestamp: BigInt!
+  creationTxHash: Bytes!
+
+  executedTimestamp: BigInt
+  executedHash: Bytes
 
   treasuryContract: TreasuryContract!
   proposal: Proposal!
