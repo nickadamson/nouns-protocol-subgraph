@@ -51,8 +51,6 @@ templates:
         - name: Auction
           file: ./abis/Auction.json
       eventHandlers:
-        - event: AuctionInitialized(uint256)
-          handler: handleAuctionInitialized
         - event: AuctionCreated(uint256,uint256,uint256)
           topic0: "0xd6eddd1118d71820909c1197aa966dbc15ed6f508554252169cc3d5ccac756ca"
           handler: handleAuctionCreated
@@ -93,8 +91,6 @@ templates:
         - name: Treasury
           file: ./abis/Treasury.json
       eventHandlers:
-        - event: TreasuryInitialized(uint256)
-          handler: handleTreasuryInitialized
         - event: DelayUpdated(uint256,uint256)
           topic0: "0xa580b4a9812995ffed1b336481c3f3bfeb3414df9f587a9d73856bab25aa4eee"
           handler: handleDelayUpdated
@@ -130,8 +126,6 @@ templates:
         - name: Governor
           file: ./abis/Governor.json
       eventHandlers:
-        - event: GovernorInitialized(uint256)
-          handler: handleGovernorInitialized
         - event: ProposalCreated(bytes32,address[],uint256[],bytes[],string,bytes32,(address,uint32,uint32,uint32,uint32,uint32,uint32,uint32,uint32,bool,bool,bool))
           topic0: "0x032b260f9afa08d3ff613d6248a8dce651b8c583a050ca2f9c666a179617b158"
           handler: handleProposalCreated
@@ -179,8 +173,6 @@ templates:
         - name: Token
           file: ./abis/Token.json
       eventHandlers:
-        - event: TokenInitialized(uint256)
-          handler: handleTokenInitialized
         - event: TokenTransfer(indexed address,indexed address,indexed uint256)
           handler: handleTokenTransfer
         - event: DelegateChanged(indexed address,indexed address,indexed address)
@@ -212,8 +204,6 @@ templates:
         - name: MetadataRenderer
           file: ./abis/MetadataRenderer.json
       eventHandlers:
-        - event: MetadataRendererInitialized(uint256)
-          handler: handleMetadataRendererInitialized
         - event: WebsiteURIUpdated(string,string)
           handler: handleWebsiteURIUpdated
         - event: ContractImageUpdated(string,string)
