@@ -218,7 +218,6 @@ type AuctionBid {
   id: ID!
   amount: BigInt!
   extended: Boolean!
-  blockNumber: BigInt!
   blockTimestamp: BigInt!
   auction: Auction!
   bidder: Account!
@@ -245,14 +244,6 @@ input AuctionBid_filter {
   extended_not: Boolean
   extended_in: [Boolean!]
   extended_not_in: [Boolean!]
-  blockNumber: BigInt
-  blockNumber_not: BigInt
-  blockNumber_gt: BigInt
-  blockNumber_lt: BigInt
-  blockNumber_gte: BigInt
-  blockNumber_lte: BigInt
-  blockNumber_in: [BigInt!]
-  blockNumber_not_in: [BigInt!]
   blockTimestamp: BigInt
   blockTimestamp_not: BigInt
   blockTimestamp_gt: BigInt
@@ -312,7 +303,6 @@ enum AuctionBid_orderBy {
   id
   amount
   extended
-  blockNumber
   blockTimestamp
   auction
   bidder
@@ -325,6 +315,7 @@ type AuctionContract {
   timeBuffer: BigInt!
   minBidIncrement: BigInt!
   paused: Boolean!
+  owner: String!
   DAO: DAO!
   tokenContract: TokenContract!
   auctions(skip: Int = 0, first: Int = 100, orderBy: Auction_orderBy, orderDirection: OrderDirection, where: Auction_filter): [Auction!]!
@@ -375,6 +366,26 @@ input AuctionContract_filter {
   paused_not: Boolean
   paused_in: [Boolean!]
   paused_not_in: [Boolean!]
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
   DAO: String
   DAO_not: String
   DAO_gt: String
@@ -430,6 +441,7 @@ enum AuctionContract_orderBy {
   timeBuffer
   minBidIncrement
   paused
+  owner
   DAO
   tokenContract
   auctions
@@ -453,6 +465,8 @@ scalar Bytes
 
 type DAO {
   id: ID!
+  creationTxHash: Bytes!
+  owner: String!
   tokenContract: TokenContract!
   auctionContract: AuctionContract!
   metadataContract: MetadataContract!
@@ -469,6 +483,32 @@ input DAO_filter {
   id_lte: ID
   id_in: [ID!]
   id_not_in: [ID!]
+  creationTxHash: Bytes
+  creationTxHash_not: Bytes
+  creationTxHash_in: [Bytes!]
+  creationTxHash_not_in: [Bytes!]
+  creationTxHash_contains: Bytes
+  creationTxHash_not_contains: Bytes
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
   tokenContract_: TokenContract_filter
   auctionContract_: AuctionContract_filter
   metadataContract_: MetadataContract_filter
@@ -481,6 +521,8 @@ input DAO_filter {
 
 enum DAO_orderBy {
   id
+  creationTxHash
+  owner
   tokenContract
   auctionContract
   metadataContract
@@ -675,6 +717,7 @@ type GovernorContract {
   quoromThreshold: BigInt!
   votingDelay: BigInt!
   votingPeriod: BigInt!
+  owner: String!
   proposals(skip: Int = 0, first: Int = 100, orderBy: Proposal_orderBy, orderDirection: OrderDirection, where: Proposal_filter): [Proposal!]!
   DAO: DAO!
 }
@@ -730,6 +773,26 @@ input GovernorContract_filter {
   votingPeriod_lte: BigInt
   votingPeriod_in: [BigInt!]
   votingPeriod_not_in: [BigInt!]
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
   proposals_: Proposal_filter
   DAO: String
   DAO_not: String
@@ -765,6 +828,7 @@ enum GovernorContract_orderBy {
   quoromThreshold
   votingDelay
   votingPeriod
+  owner
   proposals
   DAO
 }
@@ -980,12 +1044,15 @@ enum Property_orderBy {
 
 type Proposal {
   id: ID!
+  title: String!
   description: String!
   descriptionHash: Bytes!
   status: ProposalStatus!
   targets: [String!]!
   values: [BigInt!]!
   calldatas: [Bytes!]!
+  blockTimestamp: BigInt!
+  creationTxHash: Bytes!
   forVotes: BigInt!
   againstVotes: BigInt!
   abstainVotes: BigInt!
@@ -1003,6 +1070,26 @@ input Proposal_filter {
   id_lte: ID
   id_in: [ID!]
   id_not_in: [ID!]
+  title: String
+  title_not: String
+  title_gt: String
+  title_lt: String
+  title_gte: String
+  title_lte: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_contains: String
+  title_contains_nocase: String
+  title_not_contains: String
+  title_not_contains_nocase: String
+  title_starts_with: String
+  title_starts_with_nocase: String
+  title_not_starts_with: String
+  title_not_starts_with_nocase: String
+  title_ends_with: String
+  title_ends_with_nocase: String
+  title_not_ends_with: String
+  title_not_ends_with_nocase: String
   description: String
   description_not: String
   description_gt: String
@@ -1051,6 +1138,20 @@ input Proposal_filter {
   calldatas_contains_nocase: [Bytes!]
   calldatas_not_contains: [Bytes!]
   calldatas_not_contains_nocase: [Bytes!]
+  blockTimestamp: BigInt
+  blockTimestamp_not: BigInt
+  blockTimestamp_gt: BigInt
+  blockTimestamp_lt: BigInt
+  blockTimestamp_gte: BigInt
+  blockTimestamp_lte: BigInt
+  blockTimestamp_in: [BigInt!]
+  blockTimestamp_not_in: [BigInt!]
+  creationTxHash: Bytes
+  creationTxHash_not: Bytes
+  creationTxHash_in: [Bytes!]
+  creationTxHash_not_in: [Bytes!]
+  creationTxHash_contains: Bytes
+  creationTxHash_not_contains: Bytes
   forVotes: BigInt
   forVotes_not: BigInt
   forVotes_gt: BigInt
@@ -1125,12 +1226,15 @@ input Proposal_filter {
 
 enum Proposal_orderBy {
   id
+  title
   description
   descriptionHash
   status
   targets
   values
   calldatas
+  blockTimestamp
+  creationTxHash
   forVotes
   againstVotes
   abstainVotes
@@ -2569,6 +2673,7 @@ type TokenContract {
   symbol: String!
   totalSupply: BigInt!
   contractURI: String!
+  owner: String!
   DAO: DAO!
   auctionContract: AuctionContract!
   founders(skip: Int = 0, first: Int = 100, orderBy: FounderInfo_orderBy, orderDirection: OrderDirection, where: FounderInfo_filter): [FounderInfo!]!
@@ -2652,6 +2757,26 @@ input TokenContract_filter {
   contractURI_ends_with_nocase: String
   contractURI_not_ends_with: String
   contractURI_not_ends_with_nocase: String
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
   DAO: String
   DAO_not: String
   DAO_gt: String
@@ -2707,6 +2832,7 @@ enum TokenContract_orderBy {
   symbol
   totalSupply
   contractURI
+  owner
   DAO
   auctionContract
   founders
@@ -2717,6 +2843,7 @@ type TreasuryContract {
   id: ID!
   delay: BigInt!
   gracePeriod: BigInt!
+  owner: String!
   DAO: DAO!
   transactions(skip: Int = 0, first: Int = 100, orderBy: TreasuryTransaction_orderBy, orderDirection: OrderDirection, where: TreasuryTransaction_filter): [TreasuryTransaction!]!
 }
@@ -2746,6 +2873,26 @@ input TreasuryContract_filter {
   gracePeriod_lte: BigInt
   gracePeriod_in: [BigInt!]
   gracePeriod_not_in: [BigInt!]
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
   DAO: String
   DAO_not: String
   DAO_gt: String
@@ -2777,15 +2924,18 @@ enum TreasuryContract_orderBy {
   id
   delay
   gracePeriod
+  owner
   DAO
   transactions
 }
 
 type TreasuryTransaction {
   id: ID!
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  status: TreasuryTxStatus!
+  etaTimestamp: BigInt!
+  creationTxHash: Bytes!
+  executedTimestamp: BigInt
+  executedHash: Bytes
   treasuryContract: TreasuryContract!
   proposal: Proposal!
 }
@@ -2799,28 +2949,38 @@ input TreasuryTransaction_filter {
   id_lte: ID
   id_in: [ID!]
   id_not_in: [ID!]
-  blockNumber: BigInt
-  blockNumber_not: BigInt
-  blockNumber_gt: BigInt
-  blockNumber_lt: BigInt
-  blockNumber_gte: BigInt
-  blockNumber_lte: BigInt
-  blockNumber_in: [BigInt!]
-  blockNumber_not_in: [BigInt!]
-  blockTimestamp: BigInt
-  blockTimestamp_not: BigInt
-  blockTimestamp_gt: BigInt
-  blockTimestamp_lt: BigInt
-  blockTimestamp_gte: BigInt
-  blockTimestamp_lte: BigInt
-  blockTimestamp_in: [BigInt!]
-  blockTimestamp_not_in: [BigInt!]
-  transactionHash: Bytes
-  transactionHash_not: Bytes
-  transactionHash_in: [Bytes!]
-  transactionHash_not_in: [Bytes!]
-  transactionHash_contains: Bytes
-  transactionHash_not_contains: Bytes
+  status: TreasuryTxStatus
+  status_not: TreasuryTxStatus
+  status_in: [TreasuryTxStatus!]
+  status_not_in: [TreasuryTxStatus!]
+  etaTimestamp: BigInt
+  etaTimestamp_not: BigInt
+  etaTimestamp_gt: BigInt
+  etaTimestamp_lt: BigInt
+  etaTimestamp_gte: BigInt
+  etaTimestamp_lte: BigInt
+  etaTimestamp_in: [BigInt!]
+  etaTimestamp_not_in: [BigInt!]
+  creationTxHash: Bytes
+  creationTxHash_not: Bytes
+  creationTxHash_in: [Bytes!]
+  creationTxHash_not_in: [Bytes!]
+  creationTxHash_contains: Bytes
+  creationTxHash_not_contains: Bytes
+  executedTimestamp: BigInt
+  executedTimestamp_not: BigInt
+  executedTimestamp_gt: BigInt
+  executedTimestamp_lt: BigInt
+  executedTimestamp_gte: BigInt
+  executedTimestamp_lte: BigInt
+  executedTimestamp_in: [BigInt!]
+  executedTimestamp_not_in: [BigInt!]
+  executedHash: Bytes
+  executedHash_not: Bytes
+  executedHash_in: [Bytes!]
+  executedHash_not_in: [Bytes!]
+  executedHash_contains: Bytes
+  executedHash_not_contains: Bytes
   treasuryContract: String
   treasuryContract_not: String
   treasuryContract_gt: String
@@ -2870,11 +3030,19 @@ input TreasuryTransaction_filter {
 
 enum TreasuryTransaction_orderBy {
   id
-  blockNumber
-  blockTimestamp
-  transactionHash
+  status
+  etaTimestamp
+  creationTxHash
+  executedTimestamp
+  executedHash
   treasuryContract
   proposal
+}
+
+enum TreasuryTxStatus {
+  SCHEDULED
+  CANCELLED
+  EXECUTED
 }
 
 type Vote {
@@ -2882,6 +3050,7 @@ type Vote {
   supported: VoteType!
   reason: String!
   weight: BigInt!
+  blockTimestamp: BigInt!
   proposal: Proposal!
   voter: Account!
 }
@@ -2927,6 +3096,14 @@ input Vote_filter {
   weight_lte: BigInt
   weight_in: [BigInt!]
   weight_not_in: [BigInt!]
+  blockTimestamp: BigInt
+  blockTimestamp_not: BigInt
+  blockTimestamp_gt: BigInt
+  blockTimestamp_lt: BigInt
+  blockTimestamp_gte: BigInt
+  blockTimestamp_lte: BigInt
+  blockTimestamp_in: [BigInt!]
+  blockTimestamp_not_in: [BigInt!]
   proposal: String
   proposal_not: String
   proposal_gt: String
@@ -2979,6 +3156,7 @@ enum Vote_orderBy {
   supported
   reason
   weight
+  blockTimestamp
   proposal
   voter
 }
