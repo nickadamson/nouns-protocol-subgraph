@@ -143,4 +143,11 @@ export function handleVotingDelayUpdated(event: VotingDelayUpdated): void {}
 
 export function handleVotingPeriodUpdated(event: VotingPeriodUpdated): void {}
 
-export function handleGovernorOwnerUpdated(event: GovernorOwnerUpdated): void {}
+export function handleGovernorOwnerUpdated(event: GovernorOwnerUpdated): void {
+  const governorAddr = event.address.toHexString();
+  const newOwner = event.params.newOwner.toHexString();
+
+  let gov = GovernorContract.load(governorAddr)!;
+  gov.owner = newOwner;
+  gov.save();
+}

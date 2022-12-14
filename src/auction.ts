@@ -100,4 +100,11 @@ export function handleUnpaused(event: Unpaused): void {
   auctionContract.paused = false;
   auctionContract.save();
 }
-export function handleAuctionOwnerUpdated(event: AuctionOwnerUpdated): void {}
+export function handleAuctionOwnerUpdated(event: AuctionOwnerUpdated): void {
+  const auctionAddr = event.address.toHexString();
+  const newOwner = event.params.newOwner.toHexString();
+
+  let auctionContract = AuctionContract.load(auctionAddr)!;
+  auctionContract.owner = newOwner;
+  auctionContract.save();
+}
