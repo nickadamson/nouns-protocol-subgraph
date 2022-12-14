@@ -5,7 +5,7 @@ import {
   PropertyAdded,
   AdditionalTokenPropertiesSet,
   RendererBaseUpdated,
-} from "../generated/ManagerImpl/MetadataRenderer";
+} from "../generated/templates/MetadataContract/MetadataRenderer";
 import { MetadataContract, Property } from "../generated/schema";
 
 export function handleWebsiteURIUpdated(event: WebsiteURIUpdated): void {

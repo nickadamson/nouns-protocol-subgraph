@@ -9,7 +9,7 @@ import {
   ReservePriceUpdated,
   TimeBufferUpdated,
   Unpaused,
-} from "../generated/templates/Auction/Auction";
+} from "../generated/templates/AuctionContract/Auction";
 import {
   Account,
   Auction,

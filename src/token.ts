@@ -6,7 +6,7 @@ import {
   MintScheduled,
   MintUnscheduled,
   TokenOwnerUpdated,
-} from "../generated/ManagerImpl/Token";
+} from "../generated/templates/TokenContract/Token";
 
 export function handleTokenTransfer(event: TokenTransfer): void {}
 export function handleDelegateChanged(event: DelegateChanged): void {}

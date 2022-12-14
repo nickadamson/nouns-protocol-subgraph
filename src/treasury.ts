@@ -5,7 +5,7 @@ import {
   TransactionCanceled,
   TransactionExecuted,
   TreasuryOwnerUpdated,
-} from "../generated/ManagerImpl/Treasury";
+} from "../generated/templates/TreasuryContract/Treasury";
 
 export function handleDelayUpdated(event: DelayUpdated): void {}
 export function handleGracePeriodUpdated(event: GracePeriodUpdated): void {}

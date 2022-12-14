@@ -13,30 +13,29 @@ import {
 import {
   Token as TokenContractInstance,
   Token__getFoundersResultValue0Struct,
-} from "../generated/ManagerImpl/Token";
-import { Auction as AuctionContractInstance } from "../generated/ManagerImpl/Auction";
-import { MetadataRenderer as MetadataContractInstance } from "../generated/ManagerImpl/MetadataRenderer";
-import { Governor as GovernorContractInstance } from "../generated/ManagerImpl/Governor";
-import { Treasury as TreasuryContractInstance } from "../generated/ManagerImpl/Treasury";
+} from "../generated/templates/TokenContract/Token";
+import { Auction as AuctionContractInstance } from "../generated/templates/AuctionContract/Auction";
+import { MetadataRenderer as MetadataContractInstance } from "../generated/templates/MetadataContract/MetadataRenderer";
+import { Governor as GovernorContractInstance } from "../generated/templates/GovernorContract/Governor";
+import { Treasury as TreasuryContractInstance } from "../generated/templates/TreasuryContract/Treasury";
 
 import {
   Account,
-  AuctionContract,
   DAO,
   FounderInfo,
+  AuctionContract,
   GovernorContract,
   MetadataContract,
   TokenContract,
   TreasuryContract,
-  //   DAODeployed,
-  //   Initialized,
-  //   OwnerCanceled,
-  //   OwnerPending,
-  //   OwnerUpdated,
-  //   UpgradeRegistered,
-  //   UpgradeRemoved,
-  //   Upgraded
 } from "../generated/schema";
+import {
+  AuctionContract as AuctionContractEntity,
+  GovernorContract as GovernorContractEntity,
+  MetadataContract as MetadataContractEntity,
+  TokenContract as TokenContractEntity,
+  TreasuryContract as TreasuryContractEntity,
+} from "../generated/templates";
 
 import { ZERO_ADDRESS } from "../utils/constants";
 
@@ -81,7 +80,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   const treasuryAddr = event.params.treasury.toHexString();
 
   // init DAO entity & save
-  let newDAO = new DAO(`DAO-${tokenAddr}`);
+  let newDAO = new DAO(tokenAddr);
   newDAO.save();
 
   // init instances of DAO contracts so that we can call them (initialization doesn't emit events)
@@ -101,6 +100,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
     Address.fromString(treasuryAddr)
   );
 
+  TokenContractEntity.create(Address.fromString(tokenAddr));
   let newTokenContract = new TokenContract(tokenAddr);
   newTokenContract.DAO = newDAO.id;
   newTokenContract.name = tokenDeployment.name();
@@ -112,6 +112,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   const founders = tokenDeployment.getFounders();
   handleFounders(founders, newTokenContract);
 
+  AuctionContractEntity.create(Address.fromString(auctionAddr));
   let newAuctionContract = new AuctionContract(auctionAddr);
   newAuctionContract.DAO = newDAO.id;
   newAuctionContract.duration = auctionDeployment.duration();
@@ -122,6 +123,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newAuctionContract.tokenContract = tokenAddr;
   newAuctionContract.save();
 
+  MetadataContractEntity.create(Address.fromString(metadataAddr));
   let newMetadataContract = new MetadataContract(metadataAddr);
   newMetadataContract.DAO = newDAO.id;
   newMetadataContract.websiteURL = metadataDeployment.projectURI();
@@ -130,6 +132,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newMetadataContract.rendererBase = metadataDeployment.rendererBase();
   newMetadataContract.save();
 
+  GovernorContractEntity.create(Address.fromString(governorAddr));
   let newGovernorContract = new GovernorContract(governorAddr);
   newGovernorContract.DAO = newDAO.id;
   const vetoer = governorDeployment.vetoer();
@@ -141,6 +144,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newGovernorContract.votingPeriod = governorDeployment.votingPeriod();
   newGovernorContract.save();
 
+  TreasuryContractEntity.create(Address.fromString(treasuryAddr));
   let newTreasuryContract = new TreasuryContract(treasuryAddr);
   newTreasuryContract.DAO = newDAO.id;
   newTreasuryContract.delay = treasuryDeployment.delay();

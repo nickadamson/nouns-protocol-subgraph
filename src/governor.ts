@@ -12,7 +12,7 @@ import {
   VotingDelayUpdated,
   VotingPeriodUpdated,
   GovernorOwnerUpdated,
-} from "../generated/ManagerImpl/Governor";
+} from "../generated/templates/GovernorContract/Governor";
 import { GovernorContract, Proposal, Vote } from "../generated/schema";
 import { ZERO_ADDRESS } from "../utils/constants";
 import { findOrCreateAccount } from "./manager-impl";
@@ -109,17 +109,17 @@ export function handleVoteCast(event: VoteCast): void {
   const voterAddr = event.params.voter.toHexString();
   const voter = findOrCreateAccount(voterAddr);
   const vote = event.params.support.toI32();
-  const voteString = vote === 0 ? "FOR" : vote === 1 ? "AGAINST" : "ABSTAIN";
+  const voteString = vote === 0 ? "AGAINST" : vote === 1 ? "FOR" : "ABSTAIN";
 
   let proposal = Proposal.load(proposalId)!;
   const forVotes = proposal.forVotes;
   const againstVotes = proposal.againstVotes;
   const abstainVotes = proposal.abstainVotes;
-  proposal.forVotes = vote === 0 ? forVotes.plus(BigInt.fromI32(1)) : forVotes;
+  proposal.forVotes = vote === 1 ? forVotes.plus(BigInt.fromI32(1)) : forVotes;
   proposal.againstVotes =
-    vote === 1 ? againstVotes.plus(BigInt.fromI32(1)) : againstVotes;
+    vote === 0 ? againstVotes.plus(BigInt.fromI32(1)) : againstVotes;
   proposal.abstainVotes =
-    vote === 0 ? abstainVotes.plus(BigInt.fromI32(1)) : abstainVotes;
+    vote === 2 ? abstainVotes.plus(BigInt.fromI32(1)) : abstainVotes;
   proposal.save();
 
   let newVote = new Vote(event.transaction.hash.toHexString());
