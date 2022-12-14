@@ -34,7 +34,7 @@ export function handlePropertyAdded(event: PropertyAdded): void {
   property.metadataContract = metadataAddr;
   property.name = event.params.name;
   property.save();
-
+  // TODO
   //   let metadataContract = MetadataContract.load(metadataAddr)!;
   //   metadataContract.websiteURL = event.params.;
   //   metadataContract.save();
@@ -44,6 +44,7 @@ export function handleAdditionalTokenPropertiesSet(
 ): void {
   const metadataAddr = event.address.toHexString();
   const newProperties = event.params._additionalJsonProperties;
+  // TODO
   //   let metadataContract = MetadataContract.load(metadataAddr)!;
   //   metadataContract. =
   //   metadataContract.save();

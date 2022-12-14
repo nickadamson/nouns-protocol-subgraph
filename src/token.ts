@@ -13,12 +13,14 @@ import { handleNewFounders } from "../utils/helpers";
 export function handleTokenTransfer(event: TokenTransfer): void {
   const tokenId = event.params.tokenId;
   const newOwner = event.params.to.toHexString();
+  // TODO
 }
 
 export function handleDelegateChanged(event: DelegateChanged): void {
   const delegator = event.params.delegator;
   const from = event.params.from;
   const to = event.params.to;
+  // TODO
 }
 
 export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
@@ -37,9 +39,13 @@ export function handleFounderAllocationsCleared(
   handleNewFounders(newFounders, tokenContract);
 }
 
-export function handleMintScheduled(event: MintScheduled): void {}
+export function handleMintScheduled(event: MintScheduled): void {
+  // TODO
+}
 
-export function handleMintUnscheduled(event: MintUnscheduled): void {}
+export function handleMintUnscheduled(event: MintUnscheduled): void {
+  // TODO
+}
 
 export function handleTokenOwnerUpdated(event: TokenOwnerUpdated): void {
   const tokenContractAddr = event.address.toHexString();

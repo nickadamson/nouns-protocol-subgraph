@@ -139,9 +139,13 @@ export function handleVoteCast(event: VoteCast): void {
   newVote.save();
 }
 
-export function handleVotingDelayUpdated(event: VotingDelayUpdated): void {}
+export function handleVotingDelayUpdated(event: VotingDelayUpdated): void {
+  // TODO
+}
 
-export function handleVotingPeriodUpdated(event: VotingPeriodUpdated): void {}
+export function handleVotingPeriodUpdated(event: VotingPeriodUpdated): void {
+  // TODO
+}
 
 export function handleGovernorOwnerUpdated(event: GovernorOwnerUpdated): void {
   const governorAddr = event.address.toHexString();
