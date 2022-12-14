@@ -9,8 +9,22 @@ import {
   TreasuryOwnerUpdated,
 } from "../generated/templates/TreasuryContract/Treasury";
 
-export function handleDelayUpdated(event: DelayUpdated): void {}
-export function handleGracePeriodUpdated(event: GracePeriodUpdated): void {}
+export function handleDelayUpdated(event: DelayUpdated): void {
+  const treasuryAddr = event.address.toHexString();
+
+  let treasury = TreasuryContract.load(treasuryAddr)!;
+  treasury.delay = event.params.newDelay;
+  treasury.save();
+}
+
+export function handleGracePeriodUpdated(event: GracePeriodUpdated): void {
+  const treasuryAddr = event.address.toHexString();
+
+  let treasury = TreasuryContract.load(treasuryAddr)!;
+  treasury.gracePeriod = event.params.newGracePeriod;
+  treasury.save();
+}
+
 export function handleTransactionScheduled(event: TransactionScheduled): void {
   const txHash = event.transaction.hash;
   const proposalId = event.params.proposalId.toHexString();
