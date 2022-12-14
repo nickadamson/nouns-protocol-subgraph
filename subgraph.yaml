@@ -74,14 +74,8 @@ templates:
           handler: handlePaused
         - event: Unpaused(address)
           handler: handleUnpaused
-        - event: AuctionOwnerCanceled(indexed address,indexed address)
-          handler: handleAuctionOwnerCanceled
-        - event: AuctionOwnerPending(indexed address,indexed address)
-          handler: handleAuctionOwnerPending
         - event: AuctionOwnerUpdated(indexed address,indexed address)
           handler: handleAuctionOwnerUpdated
-        - event: AuctionUpgraded(address)
-          handler: handleAuctionUpgraded
       file: ./src/auction.ts
   - kind: ethereum
     name: TreasuryContract
@@ -114,15 +108,9 @@ templates:
         - event: TransactionExecuted(bytes32,address[],uint256[],bytes[])
           topic0: "0x7e74d8579043af873f575ed17043a48d6beba2668c6b53325bcd8c9a550e5e9c"
           handler: handleTransactionExecuted
-        - event: TreasuryOwnerCanceled(indexed address,indexed address)
-          handler: handleTreasuryOwnerCanceled
-        - event: TreasuryOwnerPending(indexed address,indexed address)
-          handler: handleTreasuryOwnerPending
         - event: TreasuryOwnerUpdated(indexed address,indexed address)
           topic0: "0x8292fce18fa69edf4db7b94ea2e58241df0ae57f97e0a6c9b29067028bf92d76"
           handler: handleTreasuryOwnerUpdated
-        - event: TreasuryUpgraded(address)
-          handler: handleTreasuryUpgraded
       file: ./src/treasury.ts
   - kind: ethereum
     name: GovernorContract
@@ -172,14 +160,8 @@ templates:
         - event: VotingPeriodUpdated(uint256,uint256)
           topic0: "0xffc708f072ca56e3d45ef0cb288b96cb9378f5f63e1646868bfbc9c38f4263a1"
           handler: handleVotingPeriodUpdated
-        - event: GovernorOwnerCanceled(indexed address,indexed address)
-          handler: handleGovernorOwnerCanceled
-        - event: GovernorOwnerPending(indexed address,indexed address)
-          handler: handleGovernorOwnerPending
         - event: GovernorOwnerUpdated(indexed address,indexed address)
           handler: handleGovernorOwnerUpdated
-        # - event: GovernorUpgraded(address)
-        #   handler: handleGovernorUpgraded
       file: ./src/governor.ts
   - kind: ethereum
     name: TokenContract
@@ -211,14 +193,8 @@ templates:
           handler: handleMintScheduled
         - event: MintUnscheduled(uint256,uint256,(address,uint8,uint32))
           handler: handleMintUnscheduled
-        - event: TokenOwnerCanceled(indexed address,indexed address)
-          handler: handleTokenOwnerCanceled
-        - event: TokenOwnerPending(indexed address,indexed address)
-          handler: handleTokenOwnerPending
         - event: TokenOwnerUpdated(indexed address,indexed address)
           handler: handleTokenOwnerUpdated
-        - event: TokenUpgraded(address)
-          handler: handleTokenUpgraded
       file: ./src/token.ts
   - kind: ethereum
     name: MetadataContract
@@ -250,6 +226,4 @@ templates:
           handler: handleAdditionalTokenPropertiesSet
         - event: RendererBaseUpdated(string,string)
           handler: handleRendererBaseUpdated
-        - event: MetadataRendererUpgraded(address)
-          handler: handleMetadataRendererUpgraded
       file: ./src/metadata-renderer.ts
