@@ -8,7 +8,10 @@
     "create-local": "graph create --node http://localhost:8020/ nickadamson/nouns-builder-mainnet",
     "remove-local": "graph remove --node http://localhost:8020/ nickadamson/nouns-builder-mainnet",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 nickadamson/nouns-builder-mainnet",
-    "test": "graph test"
+    "test": "graph test",
+    "load-schema": "./types/get-schema.sh",
+    "gen-graphql-types": "graphql-codegen --config codegen.json",
+    "gen:types": "yarn load-schema && yarn gen-graphql-types"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.37.1",
