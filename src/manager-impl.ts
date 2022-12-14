@@ -82,6 +82,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   // init DAO entity & save
   let newDAO = new DAO(tokenAddr);
   newDAO.creationTxHash = event.transaction.hash;
+  newDAO.owner = event.transaction.from.toHexString();
   newDAO.save();
 
   // init instances of DAO contracts so that we can call them (initialization doesn't emit events)
@@ -108,6 +109,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newTokenContract.symbol = tokenDeployment.symbol();
   newTokenContract.contractURI = tokenDeployment.contractURI();
   newTokenContract.totalSupply = tokenDeployment.totalSupply();
+  newTokenContract.owner = tokenDeployment.owner().toHexString();
   newTokenContract.auctionContract = auctionAddr;
   newTokenContract.save();
   const founders = tokenDeployment.getFounders();
@@ -121,6 +123,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newAuctionContract.timeBuffer = auctionDeployment.timeBuffer();
   newAuctionContract.minBidIncrement = auctionDeployment.minBidIncrement();
   newAuctionContract.paused = auctionDeployment.paused();
+  newAuctionContract.owner = auctionDeployment.owner().toHexString();
   newAuctionContract.tokenContract = tokenAddr;
   newAuctionContract.save();
 
@@ -131,6 +134,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newMetadataContract.description = metadataDeployment.description();
   newMetadataContract.contractImage = metadataDeployment.contractImage();
   newMetadataContract.rendererBase = metadataDeployment.rendererBase();
+  newMetadataContract.owner = metadataDeployment.owner().toHexString();
   newMetadataContract.save();
 
   GovernorContractEntity.create(Address.fromString(governorAddr));
@@ -143,6 +147,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newGovernorContract.quoromThreshold = governorDeployment.quorumThresholdBps();
   newGovernorContract.votingDelay = governorDeployment.votingDelay();
   newGovernorContract.votingPeriod = governorDeployment.votingPeriod();
+  newGovernorContract.owner = governorDeployment.owner().toHexString();
   newGovernorContract.save();
 
   TreasuryContractEntity.create(Address.fromString(treasuryAddr));
@@ -150,6 +155,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newTreasuryContract.DAO = newDAO.id;
   newTreasuryContract.delay = treasuryDeployment.delay();
   newTreasuryContract.gracePeriod = treasuryDeployment.gracePeriod();
+  newTreasuryContract.owner = treasuryDeployment.owner().toHexString();
   newTreasuryContract.save();
 }
 

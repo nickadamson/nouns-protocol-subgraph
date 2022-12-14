@@ -22,6 +22,7 @@ enum TreasuryTxStatus {
 type DAO @entity {
   id: ID! # tokenContractAddress
   creationTxHash: Bytes!
+  owner: String!
 
   # token Info
   tokenContract: TokenContract! @derivedFrom(field: "DAO")
@@ -59,6 +60,7 @@ type TokenContract @entity {
   symbol: String!
   totalSupply: BigInt!
   contractURI: String!
+  owner: String!
 
   DAO: DAO!
   auctionContract: AuctionContract!
@@ -72,8 +74,9 @@ type MetadataContract @entity {
   description: String!
   contractImage: String!
   rendererBase: String!
-  properties: [Property!]! @derivedFrom(field: "metadataContract")
+  owner: String!
 
+  properties: [Property!]! @derivedFrom(field: "metadataContract")
   DAO: DAO!
 }
 
@@ -84,6 +87,7 @@ type AuctionContract @entity {
   timeBuffer: BigInt!
   minBidIncrement: BigInt!
   paused: Boolean!
+  owner: String!
 
   DAO: DAO!
   tokenContract: TokenContract!
@@ -94,6 +98,7 @@ type TreasuryContract @entity {
   id: ID! # address
   delay: BigInt!
   gracePeriod: BigInt!
+  owner: String!
 
   DAO: DAO!
   transactions: [TreasuryTransaction!]! @derivedFrom(field: "treasuryContract")
@@ -107,6 +112,7 @@ type GovernorContract @entity {
   quoromThreshold: BigInt! # bps
   votingDelay: BigInt!
   votingPeriod: BigInt!
+  owner: String!
 
   proposals: [Proposal!]! @derivedFrom(field: "governorContract")
   DAO: DAO!
