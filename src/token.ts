@@ -8,6 +8,7 @@ import {
   MintUnscheduled,
   TokenOwnerUpdated,
 } from "../generated/templates/TokenContract/Token";
+import { handleNewFounders } from "../utils/helpers";
 
 export function handleTokenTransfer(event: TokenTransfer): void {}
 
@@ -17,7 +18,13 @@ export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {}
 
 export function handleFounderAllocationsCleared(
   event: FounderAllocationsCleared
-): void {}
+): void {
+  const newFounders = event.params.newFounders;
+  const tokenContractAddr = event.address.toHexString();
+
+  let tokenContract = TokenContract.load(tokenContractAddr)!;
+  handleNewFounders(newFounders, tokenContract);
+}
 
 export function handleMintScheduled(event: MintScheduled): void {}
 
