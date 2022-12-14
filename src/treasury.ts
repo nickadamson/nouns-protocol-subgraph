@@ -1,5 +1,9 @@
 import { BigInt } from "@graphprotocol/graph-ts";
-import { Proposal, TreasuryTransaction } from "../generated/schema";
+import {
+  Proposal,
+  TreasuryContract,
+  TreasuryTransaction,
+} from "../generated/schema";
 import {
   DelayUpdated,
   GracePeriodUpdated,
@@ -41,6 +45,7 @@ export function handleTransactionScheduled(event: TransactionScheduled): void {
   newTx.creationTxHash = txHash;
   newTx.save();
 }
+
 export function handleTransactionCanceled(event: TransactionCanceled): void {
   const proposalId = event.params.proposalId.toHexString();
 
@@ -53,6 +58,7 @@ export function handleTransactionCanceled(event: TransactionCanceled): void {
   tx.etaTimestamp = BigInt.fromI32(0);
   tx.save();
 }
+
 export function handleTransactionExecuted(event: TransactionExecuted): void {
   const txHash = event.transaction.hash;
   const proposalId = event.params.proposalId.toHexString();
@@ -67,4 +73,12 @@ export function handleTransactionExecuted(event: TransactionExecuted): void {
   tx.executedTimestamp = event.block.timestamp;
   tx.save();
 }
-export function handleTreasuryOwnerUpdated(event: TreasuryOwnerUpdated): void {}
+
+export function handleTreasuryOwnerUpdated(event: TreasuryOwnerUpdated): void {
+  const treasuryAddr = event.address.toHexString();
+  const newOwner = event.params.newOwner.toHexString();
+
+  let treasury = TreasuryContract.load(treasuryAddr)!;
+  treasury.owner = newOwner;
+  treasury.save();
+}
