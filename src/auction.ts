@@ -16,7 +16,7 @@ import {
   AuctionBid,
   AuctionContract,
 } from "../generated/schema";
-import { findOrCreateAccount } from "./manager-impl";
+import { findOrCreateAccount } from "../utils/helpers";
 
 export function handleAuctionCreated(event: AuctionCreated): void {
   const auctionContractAddr = event.address.toHexString();

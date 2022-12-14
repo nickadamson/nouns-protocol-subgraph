@@ -15,7 +15,7 @@ import {
 } from "../generated/templates/GovernorContract/Governor";
 import { GovernorContract, Proposal, Vote } from "../generated/schema";
 import { ZERO_ADDRESS } from "../utils/constants";
-import { findOrCreateAccount } from "./manager-impl";
+import { findOrCreateAccount } from "../utils/helpers";
 
 export function handleProposalCreated(event: ProposalCreated): void {
   const governorAddr = event.address.toHexString();
