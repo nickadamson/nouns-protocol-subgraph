@@ -140,11 +140,21 @@ export function handleVoteCast(event: VoteCast): void {
 }
 
 export function handleVotingDelayUpdated(event: VotingDelayUpdated): void {
-  // TODO
+  const governorAddr = event.address.toHexString();
+  const newVotingDelay = event.params.newVotingDelay;
+
+  let gov = GovernorContract.load(governorAddr)!;
+  gov.votingDelay = newVotingDelay;
+  gov.save();
 }
 
 export function handleVotingPeriodUpdated(event: VotingPeriodUpdated): void {
-  // TODO
+  const governorAddr = event.address.toHexString();
+  const newVotingPeriod = event.params.newVotingPeriod;
+
+  let gov = GovernorContract.load(governorAddr)!;
+  gov.votingPeriod = newVotingPeriod;
+  gov.save();
 }
 
 export function handleGovernorOwnerUpdated(event: GovernorOwnerUpdated): void {
