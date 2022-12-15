@@ -61,16 +61,22 @@ templates:
           topic0: "0xc9f72b276a388619c6d185d146697036241880c36654b1a3ffdad07c24038d99"
           handler: handleAuctionSettled
         - event: DurationUpdated(uint256)
+          topic0: ""
           handler: handleDurationUpdated
         - event: MinBidIncrementPercentageUpdated(uint256)
+          topic0: ""
           handler: handleMinBidIncrementPercentageUpdated
         - event: ReservePriceUpdated(uint256)
+          topic0: ""
           handler: handleReservePriceUpdated
         - event: TimeBufferUpdated(uint256)
+          topic0: ""
           handler: handleTimeBufferUpdated
         - event: Paused(address)
+          topic0: ""
           handler: handlePaused
         - event: Unpaused(address)
+          topic0: ""
           handler: handleUnpaused
         - event: AuctionOwnerUpdated(indexed address,indexed address)
           handler: handleAuctionOwnerUpdated
@@ -95,17 +101,18 @@ templates:
           topic0: "0xa580b4a9812995ffed1b336481c3f3bfeb3414df9f587a9d73856bab25aa4eee"
           handler: handleDelayUpdated
         - event: GracePeriodUpdated(uint256,uint256)
+          topic0: ""
           handler: handleGracePeriodUpdated
         - event: TransactionScheduled(bytes32,uint256)
           topic0: "0x7902f8969f6429dd0244329d34db6ea75cec3a150e8ddbb8945511e2f2c639ea"
           handler: handleTransactionScheduled
         - event: TransactionCanceled(bytes32)
+          topic0: ""
           handler: handleTransactionCanceled
         - event: TransactionExecuted(bytes32,address[],uint256[],bytes[])
           topic0: "0x7e74d8579043af873f575ed17043a48d6beba2668c6b53325bcd8c9a550e5e9c"
           handler: handleTransactionExecuted
         - event: TreasuryOwnerUpdated(indexed address,indexed address)
-          topic0: "0x8292fce18fa69edf4db7b94ea2e58241df0ae57f97e0a6c9b29067028bf92d76"
           handler: handleTreasuryOwnerUpdated
       file: ./src/treasury.ts
   - kind: ethereum
@@ -130,20 +137,25 @@ templates:
           topic0: "0x032b260f9afa08d3ff613d6248a8dce651b8c583a050ca2f9c666a179617b158"
           handler: handleProposalCreated
         - event: ProposalCanceled(bytes32)
+          topic0: ""
           handler: handleProposalCanceled
         - event: ProposalQueued(bytes32,uint256)
           topic0: "0x65431b33ae1566469324739cd3024c5e8d7422fa2c54e71fda14b92fd5e8f1ea"
           handler: handleProposalQueued
         - event: ProposalVetoed(bytes32)
+          topic0: ""
           handler: handleProposalVetoed
         - event: ProposalExecuted(bytes32)
           topic0: "0x7b1bcf1ccf901a11589afff5504d59fd0a53780eed2a952adade0348985139e0"
           handler: handleProposalExecuted
         - event: ProposalThresholdBpsUpdated(uint256,uint256)
+          topic0: ""
           handler: handleProposalThresholdBpsUpdated
         - event: QuorumVotesBpsUpdated(uint256,uint256)
+          topic0: ""
           handler: handleQuorumVotesBpsUpdated
         - event: VetoerUpdated(address,address)
+          topic0: ""
           handler: handleVetoerUpdated
         - event: VoteCast(address,bytes32,uint256,uint256,string)
           topic0: "0x0c165c85edbf8f9b99d51793c9429beb9dc2b608a7f81e64623052f829657af3"
@@ -180,10 +192,13 @@ templates:
         - event: DelegateVotesChanged(indexed address,uint256,uint256)
           handler: handleDelegateVotesChanged
         - event: FounderAllocationsCleared((address,uint256,uint256)[])
+          topic0: ""
           handler: handleFounderAllocationsCleared
         - event: MintScheduled(uint256,uint256,(address,uint8,uint32))
+          topic0: "0xe9af43aba12c8c691c53cf87a0d60c9ff279731244b2186b92c6a90b535a2d2c"
           handler: handleMintScheduled
         - event: MintUnscheduled(uint256,uint256,(address,uint8,uint32))
+          topic0: ""
           handler: handleMintUnscheduled
         - event: TokenOwnerUpdated(indexed address,indexed address)
           handler: handleTokenOwnerUpdated
@@ -205,15 +220,21 @@ templates:
           file: ./abis/MetadataRenderer.json
       eventHandlers:
         - event: WebsiteURIUpdated(string,string)
+          topic0: ""
           handler: handleWebsiteURIUpdated
         - event: ContractImageUpdated(string,string)
+          topic0: ""
           handler: handleContractImageUpdated
         - event: DescriptionUpdated(string,string)
+          topic0: ""
           handler: handleDescriptionUpdated
         - event: PropertyAdded(uint256,string)
+          topic0: "0xebf63270254042d3527778299325aabb702431e95ad5e9055f4cb3b047ecdccc"
           handler: handlePropertyAdded
         - event: AdditionalTokenPropertiesSet((string,string,bool)[])
+          topic0: "0xbf5f7405282e2c6b004f386e14b57c8a744e1a3e7f221b9af8031b911f6db59a"
           handler: handleAdditionalTokenPropertiesSet
         - event: RendererBaseUpdated(string,string)
+          topic0: ""
           handler: handleRendererBaseUpdated
       file: ./src/metadata-renderer.ts
