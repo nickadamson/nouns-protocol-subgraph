@@ -2,33 +2,61 @@ import { Token, TokenContract } from "../generated/schema";
 import {
   TokenTransfer,
   DelegateChanged,
-  DelegateVotesChanged,
+  // DelegateVotesChanged,
   FounderAllocationsCleared,
   MintScheduled,
-  MintUnscheduled,
+  // MintUnscheduled,
   TokenOwnerUpdated,
 } from "../generated/templates/TokenContract/Token";
-import { handleNewFounders } from "../utils/helpers";
+import {
+  findOrCreateAccount,
+  findOrCreateDelegation,
+  handleFoundersUpdated,
+  handleNewFounderMint,
+} from "../utils/helpers";
 
 export function handleTokenTransfer(event: TokenTransfer): void {
+  const tokenContractAddr = event.address.toHexString();
   const tokenId = event.params.tokenId;
   const newOwner = event.params.to.toHexString();
-  // TODO
+
+  let token = Token.load(tokenContractAddr.concat(`-${tokenId}`))!;
+  token.owner = newOwner;
+  token.save();
 }
 
 export function handleDelegateChanged(event: DelegateChanged): void {
-  const delegator = event.params.delegator;
-  const from = event.params.from;
-  const to = event.params.to;
-  // TODO
+  const tokenContractAddr = event.address.toHexString();
+  const voterAddr = event.params.from.toHexString();
+  const delegatedToAddr = event.params.to.toHexString();
+
+  const delegatedToAccount = findOrCreateAccount(delegatedToAddr);
+
+  let delegation = findOrCreateDelegation(
+    tokenContractAddr,
+    voterAddr,
+    delegatedToAddr
+  );
+  delegation.delegatedTo = delegatedToAccount.id;
+  delegation.save();
 }
 
-export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
-  const delegate = event.params.delegate;
-  const newTotal = event.params.newTotalVotes;
-  const prev = event.params.prevTotalVotes;
+// TODO not sure if necessary
+// export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
+//   const tokenContractAddr = event.address.toHexString();
+//   const delegate = event.params.delegate;
+//   const newTotal = event.params.newTotalVotes;
+//   const prev = event.params.prevTotalVotes;
+// }
+
+export function handleMintScheduled(event: MintScheduled): void {
+  const tokenContractAddr = event.address.toHexString();
+  const newFounderStruct = event.params.founder;
+
+  handleNewFounderMint(newFounderStruct, tokenContractAddr);
 }
 
+// most daos havent upgraded to this version yet
 export function handleFounderAllocationsCleared(
   event: FounderAllocationsCleared
 ): void {
@@ -36,15 +64,7 @@ export function handleFounderAllocationsCleared(
   const tokenContractAddr = event.address.toHexString();
 
   let tokenContract = TokenContract.load(tokenContractAddr)!;
-  handleNewFounders(newFounders, tokenContract);
-}
-
-export function handleMintScheduled(event: MintScheduled): void {
-  // TODO
-}
-
-export function handleMintUnscheduled(event: MintUnscheduled): void {
-  // TODO
+  handleFoundersUpdated(newFounders, tokenContract);
 }
 
 export function handleTokenOwnerUpdated(event: TokenOwnerUpdated): void {

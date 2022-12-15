@@ -24,7 +24,6 @@ import {
 } from "../generated/templates";
 
 import { ZERO_ADDRESS } from "../utils/constants";
-import { handleFounders } from "../utils/helpers";
 
 export function handleNewDAO(event: DAODeployedEvent): void {
   // format addresses
@@ -37,7 +36,6 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   // init DAO entity & save
   let newDAO = new DAO(tokenAddr);
   newDAO.creationTxHash = event.transaction.hash;
-  newDAO.owner = event.transaction.from.toHexString();
   newDAO.save();
 
   // init instances of DAO contracts so that we can call them (initialization doesn't emit events)
@@ -67,8 +65,8 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newTokenContract.owner = tokenDeployment.owner().toHexString();
   newTokenContract.auctionContract = auctionAddr;
   newTokenContract.save();
-  const founders = tokenDeployment.getFounders();
-  handleFounders(founders, newTokenContract); // move to mintScheduled
+  // const founders = tokenDeployment.getFounders();
+  // handleFounders(founders, newTokenContract); // TODO okay in mintScheduled?
 
   AuctionContractEntity.create(Address.fromString(auctionAddr));
   let newAuctionContract = new AuctionContract(auctionAddr);
@@ -102,6 +100,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newGovernorContract.votingDelay = governorDeployment.votingDelay();
   newGovernorContract.votingPeriod = governorDeployment.votingPeriod();
   newGovernorContract.owner = governorDeployment.owner().toHexString();
+  newGovernorContract.tokenContract = newTokenContract.id;
   newGovernorContract.save();
 
   TreasuryContractEntity.create(Address.fromString(treasuryAddr));

@@ -1,51 +1,51 @@
-enum ProposalStatus {
-  PENDING
-  ACTIVE
-  CANCELLED
-  VETOED
-  QUEUED
-  EXECUTED
-}
+type Account @entity {
+  # address
+  id: ID!
 
-enum VoteType {
-  FOR
-  AGAINST
-  ABSTAIN
-}
+  bids: [AuctionBid!]! @derivedFrom(field: "bidder")
+  tokens: [Token!]! @derivedFrom(field: "owner")
 
-enum TreasuryTxStatus {
-  SCHEDULED
-  CANCELLED
-  EXECUTED
+  votes: [Vote!]! @derivedFrom(field: "voter")
+  submittedProposals: [Proposal!]! @derivedFrom(field: "submitter")
+
+  delegations: [Delegation!]! @derivedFrom(field: "voter")
+  delegatedBy: [Delegation!]! @derivedFrom(field: "delegatedTo")
 }
 
 type DAO @entity {
-  id: ID! # tokenContractAddress
+  # tokenContractAddress
+  id: ID!
   creationTxHash: Bytes!
-  owner: String!
 
-  # token Info
   tokenContract: TokenContract! @derivedFrom(field: "DAO")
-  # tokenAddress: Bytes!
-
-  # auction Info
   auctionContract: AuctionContract! @derivedFrom(field: "DAO")
-  # auctionAddress: Bytes!
-
-  # metadata Info
   metadataContract: MetadataContract! @derivedFrom(field: "DAO")
-  # metadataAddress: Bytes!
-
-  # governor Info
   governorContract: GovernorContract! @derivedFrom(field: "DAO")
-  # governorAddress: Bytes!
-
-  # treasury Info
   treasuryContract: TreasuryContract! @derivedFrom(field: "DAO")
-  # treasuryAddress: Bytes!
 }
 
-type FounderInfo @entity {
+#####  TOKEN  #####
+type TokenContract @entity {
+  # tokenContractAddress
+  id: ID!
+
+  # address that manages this contract
+  owner: String!
+  name: String!
+  symbol: String!
+  totalSupply: BigInt!
+  contractURI: String!
+
+  DAO: DAO!
+  auctionContract: AuctionContract!
+  founders: [DAOFounder!]! @derivedFrom(field: "tokenContract")
+  tokens: [Token!]! @derivedFrom(field: "tokenContract")
+  delegations: [Delegation!]! @derivedFrom(field: "tokenContract")
+}
+
+#####  TOKEN  #####
+type DAOFounder @entity {
+  # tokenContractAddress.concat(-userAddress)
   id: ID!
   ownershipPercentage: BigInt!
   vestExpiry: BigInt!
@@ -54,22 +54,37 @@ type FounderInfo @entity {
   account: Account!
 }
 
-type TokenContract @entity {
-  id: ID! # address
-  name: String!
-  symbol: String!
-  totalSupply: BigInt!
-  contractURI: String!
-  owner: String!
+#####  TOKEN  #####
+# ERC721
+type Token @entity {
+  # tokenContractAddress.concat(-tokenId)
+  id: ID!
+  tokenId: BigInt!
 
-  DAO: DAO!
-  auctionContract: AuctionContract!
-  founders: [FounderInfo!]! @derivedFrom(field: "tokenContract")
-  tokens: [Token!]! @derivedFrom(field: "tokenContract")
+  # set after auction settled
+  tokenURI: String
+  owner: Account
+
+  tokenContract: TokenContract!
+  auction: Auction!
 }
 
+#####  TOKEN  #####
+# if a user has multiple DAO tokens, all of their votes use this delegation
+type Delegation @entity {
+  # voterAddress.concat(-tokenContractAddress)
+  id: ID!
+
+  tokenContract: TokenContract!
+
+  # if voter === delegatedTo, voter self-assigned
+  voter: Account! # address of voter
+  delegatedTo: Account! # address of chosen delegate
+}
+
+##### METADATA #####
 type MetadataContract @entity {
-  id: ID! # address
+  id: ID! # metadataContractAddress
   websiteURL: String! # projectURI
   description: String!
   contractImage: String!
@@ -79,111 +94,120 @@ type MetadataContract @entity {
   DAO: DAO!
 }
 
+##### METADATA #####
+# each DAO Token can have 0-15 properties that determine the appearance -
+# - of randomly generated NFTs
+# additionalProperties may be set, these are applied to the whole collection
+type Property @entity {
+  # metadataContract.concat(-propertyId || propertyKey)
+  id: ID!
+  name: String!
+
+  # additionalTokenProperties
+  value: String
+  quote: Boolean
+
+  metadataContract: MetadataContract!
+}
+
+##### AUCTION  #####
 type AuctionContract @entity {
-  id: ID! # address
-  duration: BigInt!
+  id: ID! # auctionContractAddress
+  # address that manages this contract
+  owner: String!
   reservePrice: BigInt!
+  duration: BigInt!
   timeBuffer: BigInt!
   minBidIncrement: BigInt!
   paused: Boolean!
-  owner: String!
 
   DAO: DAO!
   tokenContract: TokenContract!
-  auctions: [Auction!]! @derivedFrom(field: "auctionContract") # daily (or other interval) auctions
+
+  # daily (or other interval) auctions
+  auctions: [Auction!]! @derivedFrom(field: "auctionContract")
 }
 
-type TreasuryContract @entity {
-  id: ID! # address
-  delay: BigInt!
-  gracePeriod: BigInt!
-  owner: String!
-
-  DAO: DAO!
-  transactions: [TreasuryTransaction!]! @derivedFrom(field: "treasuryContract")
-}
-
-type GovernorContract @entity {
-  id: ID! # address
-  vetoEnabled: Boolean!
-  vetoerAddress: Bytes!
-  proposalThreshold: BigInt! # bps
-  quoromThreshold: BigInt! # bps
-  votingDelay: BigInt!
-  votingPeriod: BigInt!
-  owner: String!
-
-  proposals: [Proposal!]! @derivedFrom(field: "governorContract")
-  DAO: DAO!
-}
-
-type Token @entity {
-  id: ID! # tokenAddress + tokenId
-  tokenId: BigInt!
-  tokenURI: String!
-
-  tokenContract: TokenContract!
-  auction: Auction!
-  owner: Account!
-}
-
+##### AUCTION  #####
+# daily (or other interval) auctions
 type Auction @entity {
-  id: ID! # address + tokenId
+  # auctionContractAddress.concat(-tokenId)
+  id: ID!
+
   settled: Boolean!
-  startTime: BigInt! # uint256
-  endTime: BigInt! # uint256
-  winner: Account # address
+  startTime: BigInt!
+  endTime: BigInt!
+
+  # set after auction settled
+  winner: Account
   winningBid: AuctionBid
 
   auctionContract: AuctionContract!
+
   token: Token @derivedFrom(field: "auction")
   bids: [AuctionBid!]! @derivedFrom(field: "auction")
 }
 
+##### AUCTION  #####
 type AuctionBid @entity(immutable: true) {
-  id: ID! # txHash
-  amount: BigInt! # uint256
-  extended: Boolean! # bool
+  # txHash
+  id: ID!
+
+  amount: BigInt!
+  extended: Boolean!
   blockTimestamp: BigInt!
 
   auction: Auction!
   bidder: Account!
 }
 
-type Delegation @entity {
-  id: ID! # account address + dao address
+##### GOVERNOR #####
+type GovernorContract @entity {
+  # governorContractAddress
+  id: ID!
+
+  # address that manages this contract
+  owner: String!
+  vetoEnabled: Boolean!
+  vetoerAddress: Bytes!
+  votingDelay: BigInt!
+  votingPeriod: BigInt!
+
+  # bps
+  proposalThreshold: BigInt!
+  quoromThreshold: BigInt!
+
   DAO: DAO!
-  voter: Account!
-  delegatedTo: Account!
+  tokenContract: TokenContract!
+  proposals: [Proposal!]! @derivedFrom(field: "governorContract")
 }
 
-type Property @entity {
-  id: ID! # metadataAddr + propertyId
-  name: String!
-  metadataContract: MetadataContract!
-}
-
+##### GOVERNOR #####
 type Proposal @entity {
-  id: ID! # proposalId
+  # proposalId
+  id: ID!
   title: String!
   description: String!
   descriptionHash: Bytes!
-  status: ProposalStatus!
-  targets: [String!]!
-  values: [BigInt!]!
-  calldatas: [Bytes!]!
-  blockTimestamp: BigInt!
   creationTxHash: Bytes!
+  blockTimestamp: BigInt!
 
   forVotes: BigInt!
   againstVotes: BigInt!
   abstainVotes: BigInt!
 
+  targets: [String!]!
+  values: [BigInt!]!
+  calldatas: [Bytes!]!
+
+  status: ProposalStatus!
   governorContract: GovernorContract!
   submitter: Account!
+
   votes: [Vote!]! @derivedFrom(field: "proposal")
 }
 
+##### GOVERNOR #####
 type Vote @entity {
   id: ID! # txHash
   supported: VoteType!
@@ -193,29 +217,58 @@ type Vote @entity {
 
   proposal: Proposal!
   voter: Account!
-  # delegate: Account
 }
 
+##### TREASURY #####
+type TreasuryContract @entity {
+  # treasuryContractAddress
+  id: ID!
+
+  # address that manages this contract
+  owner: String!
+  delay: BigInt!
+  gracePeriod: BigInt!
+
+  DAO: DAO!
+  transactions: [TreasuryTransaction!]! @derivedFrom(field: "treasuryContract")
+}
+
+##### TREASURY #####
 type TreasuryTransaction @entity {
-  id: ID! # txHash
-  status: TreasuryTxStatus!
+  # txHash
+  id: ID!
   etaTimestamp: BigInt!
   creationTxHash: Bytes!
 
+  # optional
   executedTimestamp: BigInt
   executedHash: Bytes
 
+  status: TreasuryTxStatus!
   treasuryContract: TreasuryContract!
   proposal: Proposal!
 }
 
-type Account @entity {
-  id: ID! # address
-  bids: [AuctionBid!]! @derivedFrom(field: "bidder")
-  tokens: [Token!]! @derivedFrom(field: "owner")
-  votes: [Vote!]! @derivedFrom(field: "voter")
-  submittedProposals: [Proposal!]! @derivedFrom(field: "submitter")
+##### GOVERNOR #####
+enum ProposalStatus {
+  PENDING
+  ACTIVE
+  CANCELLED
+  VETOED
+  QUEUED
+  EXECUTED
+}
 
-  delegations: [Delegation!]! @derivedFrom(field: "voter")
-  delegatedBy: [Delegation!]! @derivedFrom(field: "delegatedTo")
+##### GOVERNOR #####
+enum VoteType {
+  FOR
+  AGAINST
+  ABSTAIN
+}
+
+##### TREASURY #####
+enum TreasuryTxStatus {
+  SCHEDULED
+  CANCELLED
+  EXECUTED
 }

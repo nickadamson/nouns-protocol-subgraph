@@ -87,6 +87,7 @@ export function handleProposalThresholdBpsUpdated(
   event: ProposalThresholdBpsUpdated
 ): void {
   const governorAddr = event.address.toHexString();
+
   let governorContract = GovernorContract.load(governorAddr)!;
   governorContract.proposalThreshold = event.params.newBps;
   governorContract.save();
@@ -96,6 +97,7 @@ export function handleQuorumVotesBpsUpdated(
   event: QuorumVotesBpsUpdated
 ): void {
   const governorAddr = event.address.toHexString();
+
   let governorContract = GovernorContract.load(governorAddr)!;
   governorContract.quoromThreshold = event.params.newBps;
   governorContract.save();
@@ -105,6 +107,7 @@ export function handleVetoerUpdated(event: VetoerUpdated): void {
   const governorAddr = event.address.toHexString();
   const vetoerAddr = event.params.newVetoer.toHexString();
   const vetoEnabled = vetoerAddr === ZERO_ADDRESS.toHexString();
+
   let governorContract = GovernorContract.load(governorAddr)!;
   governorContract.vetoerAddress = event.params.newVetoer;
   governorContract.vetoEnabled = vetoEnabled;
@@ -112,6 +115,10 @@ export function handleVetoerUpdated(event: VetoerUpdated): void {
 }
 
 export function handleVoteCast(event: VoteCast): void {
+  // TODO: handle delegations?
+  // const governorAddr = event.address.toHexString();
+  // const governorContract = GovernorContract.load(governorAddr)!;
+  // const tokenContractAddr = governorContract.tokenContract;
   const proposalId = event.params.proposalId.toHexString();
   const voterAddr = event.params.voter.toHexString();
   const voter = findOrCreateAccount(voterAddr);
@@ -122,6 +129,7 @@ export function handleVoteCast(event: VoteCast): void {
   const forVotes = proposal.forVotes;
   const againstVotes = proposal.againstVotes;
   const abstainVotes = proposal.abstainVotes;
+
   proposal.forVotes = vote === 1 ? forVotes.plus(BigInt.fromI32(1)) : forVotes;
   proposal.againstVotes =
     vote === 0 ? againstVotes.plus(BigInt.fromI32(1)) : againstVotes;

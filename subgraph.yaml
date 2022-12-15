@@ -34,6 +34,73 @@ dataSources:
       file: ./src/manager-impl.ts
 templates:
   - kind: ethereum
+    name: TokenContract
+    network: mainnet
+    source:
+      abi: Token
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - TokenContract
+        - Token
+      abis:
+        - name: Token
+          file: ./abis/Token.json
+      eventHandlers:
+        - event: TokenTransfer(indexed address,indexed address,indexed uint256)
+          handler: handleTokenTransfer
+        - event: DelegateChanged(indexed address,indexed address,indexed address)
+          handler: handleDelegateChanged
+        # - event: DelegateVotesChanged(indexed address,uint256,uint256)
+        #   handler: handleDelegateVotesChanged
+        - event:
+            FounderAllocationsCleared((address,uint256,uint256)[])
+            # topic0: ""
+          handler: handleFounderAllocationsCleared
+        - event: MintScheduled(uint256,uint256,(address,uint8,uint32))
+          topic0: "0xe9af43aba12c8c691c53cf87a0d60c9ff279731244b2186b92c6a90b535a2d2c"
+          handler: handleMintScheduled
+        - event: TokenOwnerUpdated(indexed address,indexed address)
+          handler: handleTokenOwnerUpdated
+      file: ./src/token.ts
+  - kind: ethereum
+    name: MetadataContract
+    network: mainnet
+    source:
+      abi: MetadataRenderer
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - MetadataContract
+        - Property
+      abis:
+        - name: MetadataRenderer
+          file: ./abis/MetadataRenderer.json
+      eventHandlers:
+        - event: WebsiteURIUpdated(string,string)
+          topic0: "0xcc0881496fc7df5b2e39876ca077298fecc92707f462d28e9fc8f14161b31073"
+          handler: handleWebsiteURIUpdated
+        - event: ContractImageUpdated(string,string)
+          topic0: "0xa4a51e61fd2a8836d039388e309e7301de08bb26931de504cded9cf6e5a90a0e"
+          handler: handleContractImageUpdated
+        - event: DescriptionUpdated(string,string)
+          topic0: "0xe21432e1fe2b572d5803dd7316b7a854952317b42017f920a616ec70cdb8a5c1"
+          handler: handleDescriptionUpdated
+        - event: PropertyAdded(uint256,string)
+          topic0: "0xebf63270254042d3527778299325aabb702431e95ad5e9055f4cb3b047ecdccc"
+          handler: handlePropertyAdded
+        - event: AdditionalTokenPropertiesSet((string,string,bool)[])
+          topic0: "0xbf5f7405282e2c6b004f386e14b57c8a744e1a3e7f221b9af8031b911f6db59a"
+          handler: handleAdditionalTokenPropertiesSet
+        - event: RendererBaseUpdated(string,string)
+          topic0: "0xc5d098cca4f56032ca7e04c4bf7fccc90f26576acaa949a5f67bc9eba4ef4149"
+          handler: handleRendererBaseUpdated
+      file: ./src/metadata-renderer.ts
+  - kind: ethereum
     name: AuctionContract
     network: mainnet
     source:
@@ -50,6 +117,8 @@ templates:
       abis:
         - name: Auction
           file: ./abis/Auction.json
+        - name: Token
+          file: ./abis/Token.json
       eventHandlers:
         - event: AuctionCreated(uint256,uint256,uint256)
           topic0: "0xd6eddd1118d71820909c1197aa966dbc15ed6f508554252169cc3d5ccac756ca"
@@ -81,40 +150,6 @@ templates:
         - event: AuctionOwnerUpdated(indexed address,indexed address)
           handler: handleAuctionOwnerUpdated
       file: ./src/auction.ts
-  - kind: ethereum
-    name: TreasuryContract
-    network: mainnet
-    source:
-      abi: Treasury
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - TreasuryContract
-        - TreasuryTransaction
-      abis:
-        - name: Treasury
-          file: ./abis/Treasury.json
-      eventHandlers:
-        - event: DelayUpdated(uint256,uint256)
-          topic0: "0xa580b4a9812995ffed1b336481c3f3bfeb3414df9f587a9d73856bab25aa4eee"
-          handler: handleDelayUpdated
-        - event: GracePeriodUpdated(uint256,uint256)
-          topic0: "0x55c7a79c45e9a972909cd640f9336a14a84adbaf756211f16267001854110191"
-          handler: handleGracePeriodUpdated
-        - event: TransactionScheduled(bytes32,uint256)
-          topic0: "0x7902f8969f6429dd0244329d34db6ea75cec3a150e8ddbb8945511e2f2c639ea"
-          handler: handleTransactionScheduled
-        - event: TransactionCanceled(bytes32)
-          topic0: "0xdecc068a49633f4a89136211fcf06f0c95bb0756be29aaba7e7eec56da7945c5"
-          handler: handleTransactionCanceled
-        - event: TransactionExecuted(bytes32,address[],uint256[],bytes[])
-          topic0: "0x7e74d8579043af873f575ed17043a48d6beba2668c6b53325bcd8c9a550e5e9c"
-          handler: handleTransactionExecuted
-        - event: TreasuryOwnerUpdated(indexed address,indexed address)
-          handler: handleTreasuryOwnerUpdated
-      file: ./src/treasury.ts
   - kind: ethereum
     name: GovernorContract
     network: mainnet
@@ -170,71 +205,36 @@ templates:
           handler: handleGovernorOwnerUpdated
       file: ./src/governor.ts
   - kind: ethereum
-    name: TokenContract
+    name: TreasuryContract
     network: mainnet
     source:
-      abi: Token
+      abi: Treasury
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - TokenContract
-        - Token
+        - TreasuryContract
+        - TreasuryTransaction
       abis:
-        - name: Token
-          file: ./abis/Token.json
+        - name: Treasury
+          file: ./abis/Treasury.json
       eventHandlers:
-        - event: TokenTransfer(indexed address,indexed address,indexed uint256)
-          handler: handleTokenTransfer
-        - event: DelegateChanged(indexed address,indexed address,indexed address)
-          handler: handleDelegateChanged
-        - event: DelegateVotesChanged(indexed address,uint256,uint256)
-          handler: handleDelegateVotesChanged
-        # - event: FounderAllocationsCleared((address,uint256,uint256)[])
-        # topic0: ""
-        # handler: handleFounderAllocationsCleared
-        - event: MintScheduled(uint256,uint256,(address,uint8,uint32))
-          topic0: "0xe9af43aba12c8c691c53cf87a0d60c9ff279731244b2186b92c6a90b535a2d2c"
-          handler: handleMintScheduled
-        # - event: MintUnscheduled(uint256,uint256,(address,uint8,uint32))
-        # topic0: ""
-        #   handler: handleMintUnscheduled
-        - event: TokenOwnerUpdated(indexed address,indexed address)
-          handler: handleTokenOwnerUpdated
-      file: ./src/token.ts
-  - kind: ethereum
-    name: MetadataContract
-    network: mainnet
-    source:
-      abi: MetadataRenderer
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - MetadataContract
-        - Property
-      abis:
-        - name: MetadataRenderer
-          file: ./abis/MetadataRenderer.json
-      eventHandlers:
-        - event: WebsiteURIUpdated(string,string)
-          topic0: "0xcc0881496fc7df5b2e39876ca077298fecc92707f462d28e9fc8f14161b31073"
-          handler: handleWebsiteURIUpdated
-        - event: ContractImageUpdated(string,string)
-          topic0: "0xa4a51e61fd2a8836d039388e309e7301de08bb26931de504cded9cf6e5a90a0e"
-          handler: handleContractImageUpdated
-        - event: DescriptionUpdated(string,string)
-          topic0: "0xe21432e1fe2b572d5803dd7316b7a854952317b42017f920a616ec70cdb8a5c1"
-          handler: handleDescriptionUpdated
-        - event: PropertyAdded(uint256,string)
-          topic0: "0xebf63270254042d3527778299325aabb702431e95ad5e9055f4cb3b047ecdccc"
-          handler: handlePropertyAdded
-        - event: AdditionalTokenPropertiesSet((string,string,bool)[])
-          topic0: "0xbf5f7405282e2c6b004f386e14b57c8a744e1a3e7f221b9af8031b911f6db59a"
-          handler: handleAdditionalTokenPropertiesSet
-        - event: RendererBaseUpdated(string,string)
-          # topic0: ""
-          handler: handleRendererBaseUpdated
-      file: ./src/metadata-renderer.ts
+        - event: DelayUpdated(uint256,uint256)
+          topic0: "0xa580b4a9812995ffed1b336481c3f3bfeb3414df9f587a9d73856bab25aa4eee"
+          handler: handleDelayUpdated
+        - event: GracePeriodUpdated(uint256,uint256)
+          topic0: "0x55c7a79c45e9a972909cd640f9336a14a84adbaf756211f16267001854110191"
+          handler: handleGracePeriodUpdated
+        - event: TransactionScheduled(bytes32,uint256)
+          topic0: "0x7902f8969f6429dd0244329d34db6ea75cec3a150e8ddbb8945511e2f2c639ea"
+          handler: handleTransactionScheduled
+        - event: TransactionCanceled(bytes32)
+          topic0: "0xdecc068a49633f4a89136211fcf06f0c95bb0756be29aaba7e7eec56da7945c5"
+          handler: handleTransactionCanceled
+        - event: TransactionExecuted(bytes32,address[],uint256[],bytes[])
+          topic0: "0x7e74d8579043af873f575ed17043a48d6beba2668c6b53325bcd8c9a550e5e9c"
+          handler: handleTransactionExecuted
+        - event: TreasuryOwnerUpdated(indexed address,indexed address)
+          handler: handleTreasuryOwnerUpdated
+      file: ./src/treasury.ts
