@@ -2,9 +2,13 @@
   "name": "nouns-builder-mainnet",
   "license": "MIT",
   "scripts": {
+    "prepare:mainnet": "mustache config/1.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:goerli": "mustache config/5.json subgraph.template.yaml > subgraph.yaml",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ nickadamson/nouns-builder-mainnet",
+    "deploy:mainnet": "graph deploy --node https://api.thegraph.com/deploy/ nickadamson/nouns-builder-mainnet",
+    "deploy:goerli": "graph deploy --node https://api.thegraph.com/deploy/ nickadamson/nouns-builder-goerli",
+    "deploy": "yarn codegen && yarn build && yarn prepare:goerli && yarn deploy:goerli && yarn prepare:mainnet && yarn deploy:mainnet",
     "create-local": "graph create --node http://localhost:8020/ nickadamson/nouns-builder-mainnet",
     "remove-local": "graph remove --node http://localhost:8020/ nickadamson/nouns-builder-mainnet",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 nickadamson/nouns-builder-mainnet",
@@ -25,6 +29,7 @@
     "typescript": "^4.9.4"
   },
   "devDependencies": {
-    "matchstick-as": "0.5.0"
+    "matchstick-as": "0.5.0",
+    "mustache": "^4.2.0"
   }
 }
