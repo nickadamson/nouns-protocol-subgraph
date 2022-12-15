@@ -68,7 +68,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newTokenContract.auctionContract = auctionAddr;
   newTokenContract.save();
   const founders = tokenDeployment.getFounders();
-  handleFounders(founders, newTokenContract);
+  handleFounders(founders, newTokenContract); // move to mintScheduled
 
   AuctionContractEntity.create(Address.fromString(auctionAddr));
   let newAuctionContract = new AuctionContract(auctionAddr);
