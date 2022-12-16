@@ -1,4 +1,4 @@
-import { Address } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { DAODeployed as DAODeployedEvent } from "../generated/ManagerImpl/ManagerImpl";
 
 import { Token as TokenContractInstance } from "../generated/templates/TokenContract/Token";
@@ -93,6 +93,7 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   let newGovernorContract = new GovernorContract(governorAddr);
   newGovernorContract.DAO = newDAO.id;
   const vetoer = governorDeployment.vetoer();
+  newGovernorContract.nextProposalNumber = BigInt.fromI32(1);
   newGovernorContract.vetoerAddress = vetoer;
   newGovernorContract.vetoEnabled = vetoer !== ZERO_ADDRESS;
   newGovernorContract.proposalThreshold = governorDeployment.proposalThresholdBps();

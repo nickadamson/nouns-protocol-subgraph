@@ -33,6 +33,14 @@ export function handleProposalCreated(event: ProposalCreated): void {
 
   let newProposal = new Proposal(event.params.proposalId.toHexString());
   newProposal.status = "PENDING";
+
+  let governorContract = GovernorContract.load(governorAddr)!;
+  newProposal.number = governorContract.nextProposalNumber;
+  governorContract.nextProposalNumber = governorContract.nextProposalNumber.plus(
+    BigInt.fromI32(1)
+  );
+  governorContract.save();
+
   newProposal.targets = targets;
   newProposal.values = event.params.values;
   newProposal.calldatas = event.params.calldatas;

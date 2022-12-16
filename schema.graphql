@@ -177,16 +177,19 @@ type GovernorContract @entity {
   proposalThreshold: BigInt!
   quoromThreshold: BigInt!
 
-  DAO: DAO!
-  tokenContract: TokenContract!
+  nextProposalNumber: BigInt!
+
   proposals: [Proposal!]! @derivedFrom(field: "governorContract")
+  tokenContract: TokenContract!
+  DAO: DAO!
 }
 
 ##### GOVERNOR #####
 type Proposal @entity {
   # proposalId
   id: ID!
-  title: String!
+  number: BigInt!
+  title: String
   description: String!
   descriptionHash: Bytes!
   creationTxHash: Bytes!
@@ -229,8 +232,8 @@ type TreasuryContract @entity {
   delay: BigInt!
   gracePeriod: BigInt!
 
-  DAO: DAO!
   transactions: [TreasuryTransaction!]! @derivedFrom(field: "treasuryContract")
+  DAO: DAO!
 }
 
 ##### TREASURY #####
