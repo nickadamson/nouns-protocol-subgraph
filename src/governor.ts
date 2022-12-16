@@ -23,7 +23,7 @@ export function handleProposalCreated(event: ProposalCreated): void {
   const submitter = findOrCreateAccount(submitterAddr);
 
   const _description = event.params.description;
-  const array = _description.split("&&");
+  const detailsArray = _description.split("&&");
 
   const _targets = event.params.targets;
   const targets: string[] = [];
@@ -36,8 +36,8 @@ export function handleProposalCreated(event: ProposalCreated): void {
   newProposal.targets = targets;
   newProposal.values = event.params.values;
   newProposal.calldatas = event.params.calldatas;
-  newProposal.title = array[0];
-  newProposal.description = array[1];
+  newProposal.title = detailsArray[0];
+  newProposal.description = detailsArray[1];
   newProposal.descriptionHash = event.params.descriptionHash;
   newProposal.governorContract = governorAddr;
   newProposal.submitter = submitter.id;
