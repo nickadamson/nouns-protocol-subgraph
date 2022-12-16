@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, log } from "@graphprotocol/graph-ts";
 import {
   ProposalCreated,
   ProposalCanceled,
@@ -23,7 +23,16 @@ export function handleProposalCreated(event: ProposalCreated): void {
   const submitter = findOrCreateAccount(submitterAddr);
 
   const _description = event.params.description;
-  const detailsArray = _description.split("&&");
+  let detailsArray: string[] = [];
+  let title = "";
+  let description = _description;
+  if (_description.includes("&&")) {
+    detailsArray = _description.split("&&");
+    if (detailsArray[0] && detailsArray[1]) {
+      title = detailsArray[0];
+      description = detailsArray[1];
+    }
+  }
 
   const _targets = event.params.targets;
   const targets: string[] = [];
@@ -35,17 +44,20 @@ export function handleProposalCreated(event: ProposalCreated): void {
   newProposal.status = "PENDING";
 
   let governorContract = GovernorContract.load(governorAddr)!;
+  const currentIndex = governorContract.nextProposalNumber;
+  const one = BigInt.fromString("1");
+  const nextIndex = currentIndex.plus(one);
   newProposal.number = governorContract.nextProposalNumber;
-  governorContract.nextProposalNumber = governorContract.nextProposalNumber.plus(
-    BigInt.fromI32(1)
-  );
+  governorContract.nextProposalNumber = nextIndex;
   governorContract.save();
 
   newProposal.targets = targets;
   newProposal.values = event.params.values;
   newProposal.calldatas = event.params.calldatas;
-  newProposal.title = detailsArray[0];
-  newProposal.description = detailsArray[1];
+  if (title) {
+    newProposal.title = title;
+  }
+  newProposal.description = description;
   newProposal.descriptionHash = event.params.descriptionHash;
   newProposal.governorContract = governorAddr;
   newProposal.submitter = submitter.id;
