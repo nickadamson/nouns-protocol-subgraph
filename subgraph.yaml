@@ -8,7 +8,7 @@ dataSources:
     source:
       address: "0xd310a3041dfcf14def5ccbc508668974b5da7174"
       abi: ManagerImpl
-      startBlock: 7810636
+      startBlock: 15799618
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
