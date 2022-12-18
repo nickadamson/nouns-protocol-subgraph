@@ -24,6 +24,11 @@ import { Address } from "@graphprotocol/graph-ts";
 export function handleAuctionCreated(event: AuctionCreated): void {
   const auctionContractAddr = event.address.toHexString();
   const tokenId = event.params.tokenId;
+  const auctionContract = AuctionContract.load(auctionContractAddr)!;
+  const tokenContractAddr = auctionContract.tokenContract;
+  const tokenContractDeployment = TokenContractInstance.bind(
+    Address.fromString(tokenContractAddr)
+  );
 
   let newAuction = new Auction(
     auctionContractAddr.concat(`-${tokenId.toString()}`)
@@ -39,6 +44,7 @@ export function handleAuctionCreated(event: AuctionCreated): void {
   let newToken = new Token(tokenContract.id.concat(`-${tokenId}`));
   newToken.tokenId = tokenId;
   newToken.auction = newAuction.id;
+  newToken.tokenURI = tokenContractDeployment.tokenURI(tokenId);
   newToken.tokenContract = tokenContract.id;
   newToken.save();
 }
@@ -73,9 +79,6 @@ export function handleAuctionSettled(event: AuctionSettled): void {
   const winnerAddr = event.params.winner.toHexString();
   const auctionContract = AuctionContract.load(auctionContractAddr)!;
   const tokenContractAddr = auctionContract.tokenContract;
-  const tokenContractDeployment = TokenContractInstance.bind(
-    Address.fromString(tokenContractAddr)
-  );
 
   let auction = Auction.load(
     auctionContractAddr.concat(`-${tokenId.toString()}`)
@@ -86,7 +89,6 @@ export function handleAuctionSettled(event: AuctionSettled): void {
   auction.save();
 
   let token = Token.load(tokenContractAddr.concat(`-${tokenId}`))!;
-  token.tokenURI = tokenContractDeployment.tokenURI(tokenId);
   token.owner = winnerAddr;
   token.save();
 }

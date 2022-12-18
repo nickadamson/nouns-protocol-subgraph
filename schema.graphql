@@ -60,9 +60,9 @@ type Token @entity {
   # tokenContractAddress.concat(-tokenId)
   id: ID!
   tokenId: BigInt!
+  tokenURI: String
 
   # set after auction settled
-  tokenURI: String
   owner: Account
 
   tokenContract: TokenContract!
