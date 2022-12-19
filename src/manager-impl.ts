@@ -39,21 +39,11 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newDAO.save();
 
   // init instances of DAO contracts so that we can call them (initialization doesn't emit events)
-  const tokenDeployment = TokenContractInstance.bind(
-    Address.fromString(tokenAddr)
-  );
-  const auctionDeployment = AuctionContractInstance.bind(
-    Address.fromString(auctionAddr)
-  );
-  const metadataDeployment = MetadataContractInstance.bind(
-    Address.fromString(metadataAddr)
-  );
-  const governorDeployment = GovernorContractInstance.bind(
-    Address.fromString(governorAddr)
-  );
-  const treasuryDeployment = TreasuryContractInstance.bind(
-    Address.fromString(treasuryAddr)
-  );
+  const tokenDeployment = TokenContractInstance.bind(Address.fromString(tokenAddr));
+  const auctionDeployment = AuctionContractInstance.bind(Address.fromString(auctionAddr));
+  const metadataDeployment = MetadataContractInstance.bind(Address.fromString(metadataAddr));
+  const governorDeployment = GovernorContractInstance.bind(Address.fromString(governorAddr));
+  const treasuryDeployment = TreasuryContractInstance.bind(Address.fromString(treasuryAddr));
 
   TokenContractEntity.create(Address.fromString(tokenAddr));
   let newTokenContract = new TokenContract(tokenAddr);
@@ -61,7 +51,8 @@ export function handleNewDAO(event: DAODeployedEvent): void {
   newTokenContract.name = tokenDeployment.name();
   newTokenContract.symbol = tokenDeployment.symbol();
   newTokenContract.contractURI = tokenDeployment.contractURI();
-  newTokenContract.totalSupply = tokenDeployment.totalSupply();
+  // newTokenContract.totalSupply = tokenDeployment.totalSupply();
+  newTokenContract.totalSupply = BigInt.fromI32(0);
   newTokenContract.owner = tokenDeployment.owner().toHexString();
   newTokenContract.auctionContract = auctionAddr;
   newTokenContract.save();

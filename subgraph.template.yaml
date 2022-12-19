@@ -49,7 +49,7 @@ templates:
         - name: Token
           file: ./abis/Token.json
       eventHandlers:
-        - event: TokenTransfer(indexed address,indexed address,indexed uint256)
+        - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTokenTransfer
         - event: DelegateChanged(indexed address,indexed address,indexed address)
           handler: handleDelegateChanged
@@ -62,7 +62,7 @@ templates:
         - event: MintScheduled(uint256,uint256,(address,uint8,uint32))
           topic0: "0xe9af43aba12c8c691c53cf87a0d60c9ff279731244b2186b92c6a90b535a2d2c"
           handler: handleMintScheduled
-        - event: TokenOwnerUpdated(indexed address,indexed address)
+        - event: OwnerUpdated(indexed address,indexed address)
           handler: handleTokenOwnerUpdated
       file: ./src/token.ts
   - kind: ethereum

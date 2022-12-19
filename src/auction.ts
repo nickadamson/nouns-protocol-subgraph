@@ -10,15 +10,9 @@ import {
   TimeBufferUpdated,
   Unpaused,
 } from "../generated/templates/AuctionContract/Auction";
-import {
-  Auction,
-  AuctionBid,
-  AuctionContract,
-  Token,
-  TokenContract,
-} from "../generated/schema";
+import { Auction, AuctionBid, AuctionContract, Token, TokenContract } from "../generated/schema";
 import { Token as TokenContractInstance } from "../generated/templates/TokenContract/Token";
-import { findOrCreateAccount } from "../utils/helpers";
+import { findOrCreateAccount, findOrCreateAuction, findOrCreateToken, handleTokenTotalSupply } from "../utils/helpers";
 import { Address } from "@graphprotocol/graph-ts";
 
 export function handleAuctionCreated(event: AuctionCreated): void {
@@ -26,20 +20,16 @@ export function handleAuctionCreated(event: AuctionCreated): void {
   const tokenId = event.params.tokenId;
   const auctionContract = AuctionContract.load(auctionContractAddr)!;
   const tokenContractAddr = auctionContract.tokenContract;
-  const tokenContractDeployment = TokenContractInstance.bind(
-    Address.fromString(tokenContractAddr)
-  );
+  const tokenContractDeployment = TokenContractInstance.bind(Address.fromString(tokenContractAddr));
 
-  let newAuction = new Auction(
-    auctionContractAddr.concat(`-${tokenId.toString()}`)
-  );
+  let newAuction = new Auction(auctionContractAddr.concat(`-${tokenId.toString()}`));
   newAuction.settled = false;
   newAuction.startTime = event.params.startTime;
   newAuction.endTime = event.params.endTime;
   newAuction.auctionContract = auctionContractAddr;
   newAuction.save();
 
-  let auctionContract = AuctionContract.load(auctionContractAddr)!;
+  let token = findOrCreateToken(tokenContractAddr, tokenId);
   let tokenContract = TokenContract.load(auctionContract.tokenContract)!;
   let newToken = new Token(tokenContract.id.concat(`-${tokenId}`));
   newToken.tokenId = tokenId;
@@ -47,6 +37,8 @@ export function handleAuctionCreated(event: AuctionCreated): void {
   newToken.tokenURI = tokenContractDeployment.tokenURI(tokenId);
   newToken.tokenContract = tokenContract.id;
   newToken.save();
+
+  handleTokenTotalSupply(auctionContract.tokenContract);
 }
 
 export function handleAuctionBid(event: AuctionBidEvent): void {
@@ -54,9 +46,7 @@ export function handleAuctionBid(event: AuctionBidEvent): void {
   const tokenId = event.params.tokenId;
   const amount = event.params.amount;
 
-  let auction = Auction.load(
-    auctionContractAddr.concat(`-${tokenId.toString()}`)
-  )!;
+  let auction = Auction.load(auctionContractAddr.concat(`-${tokenId.toString()}`))!;
   auction.endTime = event.params.endTime;
   auction.winningBid = event.transaction.hash.toHexString();
   auction.save();
@@ -80,15 +70,14 @@ export function handleAuctionSettled(event: AuctionSettled): void {
   const auctionContract = AuctionContract.load(auctionContractAddr)!;
   const tokenContractAddr = auctionContract.tokenContract;
 
-  let auction = Auction.load(
-    auctionContractAddr.concat(`-${tokenId.toString()}`)
-  )!;
-
+  let auction = Auction.load(auctionContractAddr.concat(`-${tokenId.toString()}`))!;
+  auction.settled = true;
   auction.winner = winnerAddr;
   auction.endTime = event.block.timestamp;
   auction.save();
 
-  let token = Token.load(tokenContractAddr.concat(`-${tokenId}`))!;
+  let token = findOrCreateToken(tokenContractAddr, tokenId);
+  // let token = Token.load(tokenContractAddr.concat(`-${tokenId}`))!;
   token.owner = winnerAddr;
   token.save();
 }
@@ -101,9 +90,7 @@ export function handleDurationUpdated(event: DurationUpdated): void {
   auctionContract.save();
 }
 
-export function handleMinBidIncrementPercentageUpdated(
-  event: MinBidIncrementPercentageUpdated
-): void {
+export function handleMinBidIncrementPercentageUpdated(event: MinBidIncrementPercentageUpdated): void {
   const auctionContractAddr = event.address.toHexString();
 
   let auctionContract = AuctionContract.load(auctionContractAddr)!;

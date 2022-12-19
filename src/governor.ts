@@ -103,9 +103,7 @@ export function handleProposalExecuted(event: ProposalExecuted): void {
   proposal.save();
 }
 
-export function handleProposalThresholdBpsUpdated(
-  event: ProposalThresholdBpsUpdated
-): void {
+export function handleProposalThresholdBpsUpdated(event: ProposalThresholdBpsUpdated): void {
   const governorAddr = event.address.toHexString();
 
   let governorContract = GovernorContract.load(governorAddr)!;
@@ -113,9 +111,7 @@ export function handleProposalThresholdBpsUpdated(
   governorContract.save();
 }
 
-export function handleQuorumVotesBpsUpdated(
-  event: QuorumVotesBpsUpdated
-): void {
+export function handleQuorumVotesBpsUpdated(event: QuorumVotesBpsUpdated): void {
   const governorAddr = event.address.toHexString();
 
   let governorContract = GovernorContract.load(governorAddr)!;
@@ -151,10 +147,8 @@ export function handleVoteCast(event: VoteCast): void {
   const abstainVotes = proposal.abstainVotes;
 
   proposal.forVotes = vote === 1 ? forVotes.plus(BigInt.fromI32(1)) : forVotes;
-  proposal.againstVotes =
-    vote === 0 ? againstVotes.plus(BigInt.fromI32(1)) : againstVotes;
-  proposal.abstainVotes =
-    vote === 2 ? abstainVotes.plus(BigInt.fromI32(1)) : abstainVotes;
+  proposal.againstVotes = vote === 0 ? againstVotes.plus(BigInt.fromI32(1)) : againstVotes;
+  proposal.abstainVotes = vote === 2 ? abstainVotes.plus(BigInt.fromI32(1)) : abstainVotes;
   proposal.save();
 
   let newVote = new Vote(event.transaction.hash.toHexString());

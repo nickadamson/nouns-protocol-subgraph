@@ -43,9 +43,7 @@ export function handlePropertyAdded(event: PropertyAdded): void {
   property.save();
 }
 
-export function handleAdditionalTokenPropertiesSet(
-  event: AdditionalTokenPropertiesSet
-): void {
+export function handleAdditionalTokenPropertiesSet(event: AdditionalTokenPropertiesSet): void {
   const metadataAddr = event.address.toHexString();
   const newProperties = event.params._additionalJsonProperties;
   const newPropsLength = newProperties.length;
