@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, log } from "@graphprotocol/graph-ts";
 import {
   ProposalCreated,
   ProposalCanceled,
@@ -23,7 +23,16 @@ export function handleProposalCreated(event: ProposalCreated): void {
   const submitter = findOrCreateAccount(submitterAddr);
 
   const _description = event.params.description;
-  const array = _description.split("&&");
+  let detailsArray: string[] = [];
+  let title = "";
+  let description = _description;
+  if (_description.includes("&&")) {
+    detailsArray = _description.split("&&");
+    if (detailsArray[0] && detailsArray[1]) {
+      title = detailsArray[0];
+      description = detailsArray[1];
+    }
+  }
 
   const _targets = event.params.targets;
   const targets: string[] = [];
@@ -33,11 +42,22 @@ export function handleProposalCreated(event: ProposalCreated): void {
 
   let newProposal = new Proposal(event.params.proposalId.toHexString());
   newProposal.status = "PENDING";
+
+  let governorContract = GovernorContract.load(governorAddr)!;
+  const currentIndex = governorContract.nextProposalNumber;
+  const one = BigInt.fromString("1");
+  const nextIndex = currentIndex.plus(one);
+  newProposal.number = governorContract.nextProposalNumber;
+  governorContract.nextProposalNumber = nextIndex;
+  governorContract.save();
+
   newProposal.targets = targets;
   newProposal.values = event.params.values;
   newProposal.calldatas = event.params.calldatas;
-  newProposal.title = array[0];
-  newProposal.description = array[1];
+  if (title) {
+    newProposal.title = title;
+  }
+  newProposal.description = description;
   newProposal.descriptionHash = event.params.descriptionHash;
   newProposal.governorContract = governorAddr;
   newProposal.submitter = submitter.id;
@@ -83,9 +103,7 @@ export function handleProposalExecuted(event: ProposalExecuted): void {
   proposal.save();
 }
 
-export function handleProposalThresholdBpsUpdated(
-  event: ProposalThresholdBpsUpdated
-): void {
+export function handleProposalThresholdBpsUpdated(event: ProposalThresholdBpsUpdated): void {
   const governorAddr = event.address.toHexString();
 
   let governorContract = GovernorContract.load(governorAddr)!;
@@ -93,9 +111,7 @@ export function handleProposalThresholdBpsUpdated(
   governorContract.save();
 }
 
-export function handleQuorumVotesBpsUpdated(
-  event: QuorumVotesBpsUpdated
-): void {
+export function handleQuorumVotesBpsUpdated(event: QuorumVotesBpsUpdated): void {
   const governorAddr = event.address.toHexString();
 
   let governorContract = GovernorContract.load(governorAddr)!;
@@ -131,10 +147,8 @@ export function handleVoteCast(event: VoteCast): void {
   const abstainVotes = proposal.abstainVotes;
 
   proposal.forVotes = vote === 1 ? forVotes.plus(BigInt.fromI32(1)) : forVotes;
-  proposal.againstVotes =
-    vote === 0 ? againstVotes.plus(BigInt.fromI32(1)) : againstVotes;
-  proposal.abstainVotes =
-    vote === 2 ? abstainVotes.plus(BigInt.fromI32(1)) : abstainVotes;
+  proposal.againstVotes = vote === 0 ? againstVotes.plus(BigInt.fromI32(1)) : againstVotes;
+  proposal.abstainVotes = vote === 2 ? abstainVotes.plus(BigInt.fromI32(1)) : abstainVotes;
   proposal.save();
 
   let newVote = new Vote(event.transaction.hash.toHexString());

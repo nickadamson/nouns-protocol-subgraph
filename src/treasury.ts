@@ -1,9 +1,5 @@
 import { BigInt } from "@graphprotocol/graph-ts";
-import {
-  Proposal,
-  TreasuryContract,
-  TreasuryTransaction,
-} from "../generated/schema";
+import { Proposal, TreasuryContract, TreasuryTransaction } from "../generated/schema";
 import {
   DelayUpdated,
   GracePeriodUpdated,

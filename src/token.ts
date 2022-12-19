@@ -1,26 +1,29 @@
+import { BigInt } from "@graphprotocol/graph-ts";
 import { Token, TokenContract } from "../generated/schema";
 import {
-  TokenTransfer,
+  Transfer,
   DelegateChanged,
   // DelegateVotesChanged,
   FounderAllocationsCleared,
   MintScheduled,
   // MintUnscheduled,
-  TokenOwnerUpdated,
+  OwnerUpdated,
 } from "../generated/templates/TokenContract/Token";
 import {
   findOrCreateAccount,
   findOrCreateDelegation,
+  findOrCreateToken,
   handleFoundersUpdated,
   handleNewFounderMint,
+  handleTokenTotalSupply,
 } from "../utils/helpers";
 
-export function handleTokenTransfer(event: TokenTransfer): void {
+export function handleTokenTransfer(event: Transfer): void {
   const tokenContractAddr = event.address.toHexString();
   const tokenId = event.params.tokenId;
   const newOwner = event.params.to.toHexString();
 
-  let token = Token.load(tokenContractAddr.concat(`-${tokenId}`))!;
+  let token = findOrCreateToken(tokenContractAddr, tokenId);
   token.owner = newOwner;
   token.save();
 }
@@ -32,11 +35,7 @@ export function handleDelegateChanged(event: DelegateChanged): void {
 
   const delegatedToAccount = findOrCreateAccount(delegatedToAddr);
 
-  let delegation = findOrCreateDelegation(
-    tokenContractAddr,
-    voterAddr,
-    delegatedToAddr
-  );
+  let delegation = findOrCreateDelegation(tokenContractAddr, voterAddr, delegatedToAddr);
   delegation.delegatedTo = delegatedToAccount.id;
   delegation.save();
 }
@@ -54,12 +53,11 @@ export function handleMintScheduled(event: MintScheduled): void {
   const newFounderStruct = event.params.founder;
 
   handleNewFounderMint(newFounderStruct, tokenContractAddr);
+  // handleTokenTotalSupply(tokenContractAddr);
 }
 
 // most daos havent upgraded to this version yet
-export function handleFounderAllocationsCleared(
-  event: FounderAllocationsCleared
-): void {
+export function handleFounderAllocationsCleared(event: FounderAllocationsCleared): void {
   const newFounders = event.params.newFounders;
   const tokenContractAddr = event.address.toHexString();
 
@@ -67,7 +65,7 @@ export function handleFounderAllocationsCleared(
   handleFoundersUpdated(newFounders, tokenContract);
 }
 
-export function handleTokenOwnerUpdated(event: TokenOwnerUpdated): void {
+export function handleTokenOwnerUpdated(event: OwnerUpdated): void {
   const tokenContractAddr = event.address.toHexString();
   const newOwner = event.params.newOwner.toHexString();
 
